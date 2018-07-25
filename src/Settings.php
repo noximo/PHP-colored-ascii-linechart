@@ -7,7 +7,7 @@ namespace noximo\PHPColoredConsoleLinegraph;
  * Class Config
  * @package noximo\PHPColoredConsoleLinegraph
  */
-class Config
+class Settings
 {
     /**
      * @var int
@@ -36,10 +36,10 @@ class Config
      */
     public function __construct()
     {
-        $this->format = function ($x, Config $config) {
+        $this->format = function ($x, Settings $config) {
             $padding = $config->getPadding();
             $paddingLength = strlen($padding);
-            return substr($padding . (string) round($x, 2), -$paddingLength);
+            return substr($padding . round($x, 2), -$paddingLength);
         };
     }
 
@@ -54,9 +54,9 @@ class Config
     /**
      * @param string $padding
      *
-     * @return Config
+     * @return Settings
      */
-    public function setPadding(int $length, string $char = ' '): Config
+    public function setPadding(int $length, string $char = ' '): Settings
     {
         $padding = strlen($char) === '' ? ' ' : $char;
         $this->padding = str_pad('', $length, $padding);
@@ -74,9 +74,9 @@ class Config
     /**
      * @param int $height
      *
-     * @return Config
+     * @return Settings
      */
-    public function setHeight(int $height): Config
+    public function setHeight(int $height): Settings
     {
         $this->height = $height;
         return $this;
@@ -103,9 +103,9 @@ class Config
     /**
      * @param int $offset
      *
-     * @return Config
+     * @return Settings
      */
-    public function setOffset(int $offset): Config
+    public function setOffset(int $offset): Settings
     {
         $this->offset = $offset;
         return $this;
@@ -126,9 +126,9 @@ class Config
      *      return substr($padding . (string) round($x, 2), $paddingLength);
      * };
      *
-     * @return Config
+     * @return Settings
      */
-    public function setFormat(callable $format): Config
+    public function setFormat(callable $format): Settings
     {
         $this->format = $format;
         return $this;

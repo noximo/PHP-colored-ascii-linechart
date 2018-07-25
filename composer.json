@@ -8,6 +8,11 @@
       "email": "pospisilt@gmail.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "noximo\\PHPColoredConsoleLinegraph\\": "src/"
+    }
+  },
   "require": {
     "php": ">= 7.2",
     "ext-json": ">=1.3.7"

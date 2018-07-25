@@ -1,12 +1,28 @@
 <?php
 declare(strict_types = 1);
 
+use noximo\PHPColoredConsoleLinegraph\Color;
+use noximo\PHPColoredConsoleLinegraph\ColorException;
+use noximo\PHPColoredConsoleLinegraph\LineGraph;
+use noximo\PHPColoredConsoleLinegraph\Settings;
+
 require_once dirname(__DIR__) . '/src/LineGraph.php';
-require_once dirname(__DIR__) . '/src/Config.php';
+require_once dirname(__DIR__) . '/src/Graph.php';
+require_once dirname(__DIR__) . '/src/ColorException.php';
+require_once dirname(__DIR__) . '/src/Color.php';
+require_once dirname(__DIR__) . '/src/Settings.php';
 
-$config = new noximo\PHPColoredConsoleLinegraph\Config();
+$settings = new Settings();
 
-$lineGraph = new noximo\PHPColoredConsoleLinegraph\LineGraph();
+$lineGraph = new LineGraph();
 
-$config->setHeight(20)->setOffset(10)->setPadding(8);
-$lineGraph->chart([1,1500,1,51,51,51,51,48,45,1654,84,6,514,651,84,5,41,854,5], $config);
+$lineGraph->addSeries([1, 4, 55, 2, 4, 1, 5, 2, 3, 4, 5], [Color::RED]);
+$lineGraph->addSeries([5, 4, 32, 2, 1], [Color::GREEN]);
+
+$settings->setPadding(4)->setHeight(10);
+$lineGraph->setSettings($settings);
+try {
+    $lineGraph->graph()->print()->wait();
+} catch (ReflectionException $e) {
+} catch (ColorException $e) {
+}
