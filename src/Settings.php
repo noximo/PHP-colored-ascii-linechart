@@ -17,7 +17,7 @@ class Settings
     /**
      * @var string
      */
-    private $padding = '   ';
+    private $padding = '      ';
 
     /**
      * @var callable
@@ -28,6 +28,10 @@ class Settings
      * @var int
      */
     private $height;
+    /**
+     * @var int
+     */
+    private $fps = 12;
 
     /**
      * Config constructor.
@@ -39,6 +43,7 @@ class Settings
         $this->format = function ($x, Settings $config) {
             $padding = $config->getPadding();
             $paddingLength = strlen($padding);
+
             return substr($padding . round($x, 2), -$paddingLength);
         };
     }
@@ -60,6 +65,7 @@ class Settings
     {
         $padding = strlen($char) === '' ? ' ' : $char;
         $this->padding = str_pad('', $length, $padding);
+
         return $this;
     }
 
@@ -79,6 +85,7 @@ class Settings
     public function setHeight(int $height): Settings
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -87,9 +94,7 @@ class Settings
      */
     public function setComputedHeight(int $range): void
     {
-        if (empty($this->height)) {
-            $this->height = $range;
-        }
+        $this->height = $this->height ?? $range;
     }
 
     /**
@@ -108,6 +113,7 @@ class Settings
     public function setOffset(int $offset): Settings
     {
         $this->offset = $offset;
+
         return $this;
     }
 
@@ -120,17 +126,38 @@ class Settings
     }
 
     /**
-     * @param callable $format = function ($x, Config $config) {
-     *      $padding = $config->getPadding();
-     *      $paddingLength = strlen($padding);
-     *      return substr($padding . (string) round($x, 2), $paddingLength);
-     * };
+     * @param callable $format =function ($x, Settings $config) {
+     * $padding = $config->getPadding();
+     * $paddingLength = strlen($padding);
+     * return substr($padding . round($x, 2), -$paddingLength);
+     * }
      *
      * @return Settings
      */
     public function setFormat(callable $format): Settings
     {
         $this->format = $format;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFps(): int
+    {
+        return $this->fps;
+    }
+
+    /**
+     * @param int $fps
+     *
+     * @return Settings
+     */
+    public function setFps(int $fps): Settings
+    {
+        $this->fps = $fps;
+
         return $this;
     }
 }

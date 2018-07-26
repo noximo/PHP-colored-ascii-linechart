@@ -12,32 +12,23 @@ use ReflectionException;
 class LineGraph
 {
     /**
-     * @var Graph
-     */
-    private $graph;
-
-    /**
      * @var Settings
      */
     private $settings;
     /**
-     * @var array $series = [
+     * @var array $allSeries = [
      * 'legend' => ['series' => [1,2,3.45], 'colors' => [1,2,3], 'legend' => 'legend'];
      * ]
      */
-    private $series = [];
+    private $allSeries = [];
     /**
      * @var array $points = ['x' => 1, 'y' => 0.75]
      */
     private $points = [];
-
     /**
-     * LineGraph constructor.
+     * @var int
      */
-    public function __construct()
-    {
-        $this->graph = new Graph();
-    }
+    private $iteration = 0;
 
     /**
      * @param array $series
@@ -48,7 +39,12 @@ class LineGraph
      */
     public function addSeries(array $series, array $colors = [], string $legend = null): LineGraph
     {
-        $this->series[] = ['series' => $series, 'colors' => $colors, 'legend' => $legend];
+        $seriesData = ['series' => $series, 'colors' => $colors, 'legend' => $legend];
+        if ($legend) {
+            $this->allSeries[$legend] = $seriesData;
+        } else {
+            $this->allSeries[] = $seriesData;
+        }
 
         return $this;
     }
@@ -73,27 +69,32 @@ class LineGraph
      */
     public function graph(): Graph
     {
-        $this->findMinMax();
-
-        $min = $this->graph->getMin();
-        $max = $this->graph->getMax();
-        $width = $this->graph->getWidth();
-        $count = $this->graph->getWidth();
-
+        $this->iteration++;
         $settings = $this->getSettings();
+        $allSeries = $this->allSeries;
 
-        $range = max(1, abs($max - $min));
+        $graph = new Graph();
+        $graph->setSettings($settings);
+        $graph->setIteration($this->iteration);
 
-        $height = $settings->getHeight() ?? $range;
+        $this->findMinMax($graph, $allSeries);
 
-        $ratio = $height / $range;
+        $min = $graph->getMin();
+        $max = $graph->getMax();
+        $width = $graph->getWidth();
+        $count = $graph->getWidth();
+
+        $range = (int)max(1, abs($max - $min));
+        $settings->setComputedHeight($range);
+
+        $ratio = $settings->getHeight() / $range;
         $min2 = (int) round($min * $ratio);
         $max2 = (int) round($max * $ratio);
 
         $rows = max(1, abs($max2 - $min2));
         $width += $settings->getOffset();
 
-        foreach ($this->series as $seriesData) {
+        foreach ($allSeries as $seriesData) {
             $series = $seriesData['series'];
             $colors = $seriesData['colors'];
             $result = [];
@@ -116,7 +117,7 @@ class LineGraph
             $result[$rows - $y0][$settings->getOffset() - 1] = Color::colorize('┼', $colors); // first value
 
             for ($x = 0; $x < $count - 1; $x++) {
-                if (!empty($series[$x]) && !empty($series[$x+1])) {
+                if (!empty($series[$x]) && !empty($series[$x + 1])) {
                     $y0 = (int) round($series[$x] * $ratio) - $min2;
                     $y1 = (int) round($series[$x + 1] * $ratio) - $min2;
                     if ($y0 == $y1) {
@@ -133,28 +134,10 @@ class LineGraph
                 }
             }
 
-            $this->graph->addResult($result);
+            $graph->addResult($result);
         }
 
-        return $this->graph;
-    }
-
-    private function findMinMax(): void
-    {
-        $max = $width = 0;
-        $min = PHP_INT_MAX;
-        foreach ($this->series as $series) {
-            $width = max($width, count($series['series']));
-
-            foreach ($series['series'] as $value) {
-                $min = min($min, $value);
-                $max = max($max, $value);
-            }
-        }
-
-        $this->graph->setMax($max);
-        $this->graph->setMin($min);
-        $this->graph->setWidth($width);
+        return $graph;
     }
 
     /**
@@ -177,6 +160,37 @@ class LineGraph
     public function setSettings(Settings $settings): LineGraph
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @param Graph $graph
+     */
+    private function findMinMax(Graph $graph, array $allSeries): void
+    {
+        $max = $width = 0;
+        $min = PHP_INT_MAX;
+        foreach ($allSeries as $series) {
+            $width = max($width, count($series['series']));
+
+            foreach ($series['series'] as $value) {
+                $min = min($min, $value);
+                $max = max($max, $value);
+            }
+        }
+
+        $graph->setMax($max);
+        $graph->setMin($min);
+        $graph->setWidth($width);
+    }
+
+    /**
+     * @return LineGraph
+     */
+    public function clearAllSeries(): LineGraph
+    {
+        $this->allSeries = [];
 
         return $this;
     }

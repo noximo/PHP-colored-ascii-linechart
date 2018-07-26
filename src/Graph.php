@@ -15,6 +15,10 @@ class Graph
     private $results = [];
 
     /**
+     * @var Settings
+     */
+    private $settings;
+    /**
      * @var float
      */
     private $min;
@@ -26,7 +30,50 @@ class Graph
      * @var int
      */
     private $width;
-    private $time;
+    /**
+     * @var int
+     */
+    private $iteration = 0;
+
+    /**
+     * @return int
+     */
+    public function getIteration(): int
+    {
+        return $this->iteration;
+    }
+
+    /**
+     * @param int $iteration
+     *
+     * @return Graph
+     */
+    public function setIteration(int $iteration): Graph
+    {
+        $this->iteration = $iteration;
+
+        return $this;
+    }
+
+    /**
+     * @return Settings
+     */
+    public function getSettings(): Settings
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param Settings $settings
+     *
+     * @return Graph
+     */
+    public function setSettings(Settings $settings): Graph
+    {
+        $this->settings = $settings;
+
+        return $this;
+    }
 
     /**
      * @return array
@@ -105,6 +152,37 @@ class Graph
     }
 
     /**
+     * @return Graph
+     */
+    public function printAndwait(): Graph
+    {
+        $this->print()->wait();
+
+        return $this;
+    }
+
+    /**
+     * @return Graph
+     */
+    public function wait(): Graph
+    {
+        usleep((int) round(1000000 / $this->settings->getFps()));
+
+        return $this;
+    }
+
+    /**
+     * @return Graph
+     */
+    public function print(): Graph
+    {
+        fwrite(STDOUT, $this->__toString());
+        $this->iteration++;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string
@@ -129,7 +207,6 @@ class Graph
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
                 foreach ($row as $y => $cell) {
-
                     if (!isset($merged[$x][$y]) || ($cell !== ' ' && strpos($merged[$x][$y], "┼") === false)) {
                         $merged[$x][$y] = $cell;
                     }
@@ -141,19 +218,33 @@ class Graph
     }
 
     /**
+     * @return string
+     */
+    public function toArray(): array
+    {
+        $return = [];
+        foreach ($this->merge() as $row) {
+            foreach ($row as $cell) {
+                $return [] = $cell;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
      * @return Graph
      */
-    public function print(): Graph
+    public function clearScreen(): Graph
     {
-        echo $this;
+        var_dump($this->iteration);
+        if ($this->iteration == 0) {
+            fwrite(STDOUT, "\033[2J");
+        }
+
+        fwrite(STDOUT, "\033[0;0f"); //MoveCursor
 
         return $this;
     }
 
-    public function wait():Graph
-    {
-        sleep($this->time);
-
-        return $this;
-    }
 }

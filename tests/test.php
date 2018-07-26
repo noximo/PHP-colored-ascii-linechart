@@ -11,18 +11,39 @@ require_once dirname(__DIR__) . '/src/Graph.php';
 require_once dirname(__DIR__) . '/src/ColorException.php';
 require_once dirname(__DIR__) . '/src/Color.php';
 require_once dirname(__DIR__) . '/src/Settings.php';
-
-$settings = new Settings();
-
-$lineGraph = new LineGraph();
-
-$lineGraph->addSeries([1, 4, 55, 2, 4, 1, 5, 2, 3, 4, 5], [Color::RED]);
-$lineGraph->addSeries([5, 4, 32, 2, 1], [Color::GREEN]);
-
-$settings->setPadding(4)->setHeight(10);
-$lineGraph->setSettings($settings);
 try {
-    $lineGraph->graph()->print()->wait();
+    $settings = new Settings();
+    $settings->setFps(200)->setHeight(30);
+
+
+    $lineGraph = new LineGraph();
+    $lineGraph->setSettings($settings);
+    for ($i = 0; $i < 120; $i++) {
+        $lineA[$i] = ($lineA[$i - 1] ?? 1) + random_int(-2, 2);
+        $lineB[$i] = ($lineB[$i - 1] ?? 1) + random_int(-2, 2);
+        $lineC[$i] = ($lineC[$i - 1] ?? 1) + random_int(-2, 2);
+        $lineD[$i] = ($lineD[$i - 1] ?? 1) + random_int(-2, 2);
+    }
+    for ($y = 0; $y < 1500; $y++) {
+        array_shift($lineA);
+        $lineA[] = end($lineA) + random_int(-2, 2);
+
+        array_shift($lineB);
+        $lineB[] = end($lineB) + random_int(-2, 2);
+        array_shift($lineC);
+        $lineC[] = end($lineC) + random_int(-2, 2);
+        array_shift($lineD);
+        $lineD[] = end($lineD) + random_int(-2, 2);
+
+        $lineGraph->addSeries($lineA, [Color::GREEN]);
+        $lineGraph->addSeries($lineB, [Color::RED]);
+        $lineGraph->addSeries($lineC, [Color::BLACK, Color::BOLD]);
+        $lineGraph->addSeries($lineD, [Color::WHITE]);
+
+        $lineGraph->graph()->clearScreen()->print()->wait();
+        $lineGraph->clearAllSeries();
+    }
 } catch (ReflectionException $e) {
 } catch (ColorException $e) {
+} catch (Exception $e) {
 }
