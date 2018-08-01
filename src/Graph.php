@@ -34,6 +34,10 @@ class Graph
      * @var int
      */
     private $iteration = 0;
+    /**
+     * @var int
+     */
+    private $allTimeMaxHeight = 0;
 
     /**
      * @return int
@@ -124,6 +128,18 @@ class Graph
     }
 
     /**
+     * @param float $allTimeMaxHeight
+     *
+     * @return Graph
+     */
+    public function setAlltimeMaxHeight(float $allTimeMaxHeight): Graph
+    {
+        $this->allTimeMaxHeight = $allTimeMaxHeight;
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getWidth(): int
@@ -177,7 +193,6 @@ class Graph
     public function print(): Graph
     {
         fwrite(STDOUT, $this->__toString());
-        $this->iteration++;
 
         return $this;
     }
@@ -207,10 +222,17 @@ class Graph
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
                 foreach ($row as $y => $cell) {
-                    if (!isset($merged[$x][$y]) || ($cell !== ' ' && strpos($merged[$x][$y], "┼") === false)) {
+                    if ($this->shouldBeMerged($merged, $x, $y, $cell)) {
                         $merged[$x][$y] = $cell;
                     }
                 }
+            }
+        }
+
+        if ($x < $this->allTimeMaxHeight) {
+            $width = $this->width + \strlen($this->settings->getPadding());
+            for ($i = 0, $iMax = $this->allTimeMaxHeight - $x; $i < $iMax; $i++) {
+                $merged[] = array_fill(0, $width, ' ');
             }
         }
 
@@ -218,7 +240,18 @@ class Graph
     }
 
     /**
-     * @return string
+     * @param $value
+     * @param $cell
+     *
+     * @return bool
+     */
+    private function shouldBeMerged($merged, $x, $y, $cell): bool
+    {
+        return !isset($merged[$x][$y]) || ($cell !== ' ' && strpos($merged[$x][$y], 'm') === false);
+    }
+
+    /**
+     * @return array
      */
     public function toArray(): array
     {
@@ -233,18 +266,18 @@ class Graph
     }
 
     /**
+     * @param bool $quick
+     *
      * @return Graph
      */
-    public function clearScreen(): Graph
+    public function clearScreen(bool $quick = true): Graph
     {
-        var_dump($this->iteration);
-        if ($this->iteration == 0) {
-            fwrite(STDOUT, "\033[2J");
+        if ($quick) {
+            fwrite(STDOUT, "\033[0;0f"); //MoveCursor
+        } else {
+            fwrite(STDOUT, chr(27) . chr(91) . 'H' . chr(27) . chr(91) . 'J');   //^[H^[J
         }
-
-        fwrite(STDOUT, "\033[0;0f"); //MoveCursor
 
         return $this;
     }
-
 }

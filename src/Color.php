@@ -15,7 +15,7 @@ use ReflectionClass;
  * Class Colorize
  * @package noximo\PHPColoredConsoleLinegraph
  */
-class Color
+abstract class Color
 {
     public const BOLD = 1;
     public const DARK = 2;

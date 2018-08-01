@@ -34,15 +34,13 @@ class Settings
     private $fps = 12;
 
     /**
-     * Config constructor.
-     *
-     * @param int $offset
+     * Settings constructor.
      */
     public function __construct()
     {
-        $this->format = function ($x, Settings $config) {
-            $padding = $config->getPadding();
-            $paddingLength = strlen($padding);
+        $this->format = function ($x, Settings $settings) {
+            $padding = $settings->getPadding();
+            $paddingLength = \strlen($padding);
 
             return substr($padding . round($x, 2), -$paddingLength);
         };
@@ -57,13 +55,14 @@ class Settings
     }
 
     /**
-     * @param string $padding
+     * @param int $length
+     * @param string $char
      *
      * @return Settings
      */
     public function setPadding(int $length, string $char = ' '): Settings
     {
-        $padding = strlen($char) === '' ? ' ' : $char;
+        $padding = \strlen($char) === 0 ? ' ' : $char;
         $this->padding = str_pad('', $length, $padding);
 
         return $this;
@@ -154,7 +153,7 @@ class Settings
      *
      * @return Settings
      */
-    public function setFps(int $fps): Settings
+    public function setFPS(int $fps): Settings
     {
         $this->fps = $fps;
 
