@@ -30,34 +30,13 @@ class Graph
      * @var int
      */
     private $width;
-    /**
-     * @var int
-     */
-    private $iteration = 0;
+
     /**
      * @var int
      */
     private $allTimeMaxHeight = 0;
 
-    /**
-     * @return int
-     */
-    public function getIteration(): int
-    {
-        return $this->iteration;
-    }
 
-    /**
-     * @param int $iteration
-     *
-     * @return Graph
-     */
-    public function setIteration(int $iteration): Graph
-    {
-        $this->iteration = $iteration;
-
-        return $this;
-    }
 
     /**
      * @return Settings

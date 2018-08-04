@@ -13,7 +13,7 @@ require_once dirname(__DIR__) . '/src/Color.php';
 require_once dirname(__DIR__) . '/src/Settings.php';
 try {
     $settings = new Settings();
-    $settings->setFPS(10000)->setHeight(30);
+    $settings->setFPS(24)->setHeight(30);
 
     $lineGraph = new LineGraph();
     $lineGraph->setSettings($settings);
@@ -35,21 +35,12 @@ try {
         $lineD[] = end($lineD) + random_int(-2, 2);
 
         $lineGraph->addSeries($lineA, [Color::GREEN, Color::BOLD]);
-//        $lineGraph->addSeries($lineB, [Color::GREEN], [Color::RED]);
-//        $lineGraph->addSeries($lineC, [Color::CYAN, Color::BOLD]);
-//        $lineGraph->addSeries($lineD, [Color::WHITE, Color::BOLD]);
+        $lineGraph->addSeries($lineB, [Color::GREEN], [Color::RED]);
+        $lineGraph->addSeries($lineC, [Color::CYAN, Color::BOLD]);
+        $lineGraph->addSeries($lineD, [Color::WHITE, Color::BOLD]);
 
-        $lineGraph->graph()->clearScreen(false)->print()->wait();
+        $lineGraph->graph()->clearScreen()->print()->wait();
         $lineGraph->clearAllSeries();
-
-        for ($i = max(0, $y-20); $i <= $y; $i++) {
-            echo $i . PHP_EOL;
-        }
     }
-} catch (ReflectionException $e) {
-} catch (ColorException $e) {
-} catch
-(Exception $e) {
+} catch (ReflectionException| ColorException | Exception $e) {
 }
-
-
