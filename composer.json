@@ -1,6 +1,6 @@
 {
-  "name": "noximo/php-colored-console-linegraph",
-  "description": "Pretty line graphs in your console",
+  "name": "noximo/php-colored-ascii-linechart",
+  "description": "Pretty line graphs in your console, html or images",
   "type": "library",
   "authors": [
     {
@@ -10,12 +10,13 @@
   ],
   "autoload": {
     "psr-4": {
-      "noximo\\PHPColoredConsoleLinegraph\\": "src/"
+      "noximo\\PHPColoredAsciiLinechart\\": "src/"
     }
   },
   "require": {
-    "php": ">= 7.2",
-    "ext-json": ">=1.3.7"
+    "php": ">= 7.1",
+    "ext-json": ">=1.3.7",
+    "ext-gd": "^7.2"
   },
   "license": "MIT",
   "require-dev": {

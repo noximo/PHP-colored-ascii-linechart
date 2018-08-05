@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace noximo\PHPColoredConsoleLinegraph;
+namespace noximo\PHPColoredAsciiLinechart\Colorizers;
 
 use Exception;
 

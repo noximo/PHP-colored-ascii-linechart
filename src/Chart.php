@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace noximo\PHPColoredConsoleLinegraph;
+namespace noximo\PHPColoredAsciiLinechart;
 
 /**
  * Class Graph
  * @package noximo\PHPColoredConsoleLinegraph
  */
-class Graph
+class Chart
 {
     /**
      * @var array
@@ -36,8 +36,6 @@ class Graph
      */
     private $allTimeMaxHeight = 0;
 
-
-
     /**
      * @return Settings
      */
@@ -49,9 +47,9 @@ class Graph
     /**
      * @param Settings $settings
      *
-     * @return Graph
+     * @return Chart
      */
-    public function setSettings(Settings $settings): Graph
+    public function setSettings(Settings $settings): Chart
     {
         $this->settings = $settings;
 
@@ -77,9 +75,9 @@ class Graph
     /**
      * @param float $min
      *
-     * @return Graph
+     * @return Chart
      */
-    public function setMin(float $min): Graph
+    public function setMin(float $min): Chart
     {
         $this->min = $min;
 
@@ -97,23 +95,11 @@ class Graph
     /**
      * @param float $max
      *
-     * @return Graph
+     * @return Chart
      */
-    public function setMax(float $max): Graph
+    public function setMax(float $max): Chart
     {
         $this->max = $max;
-
-        return $this;
-    }
-
-    /**
-     * @param float $allTimeMaxHeight
-     *
-     * @return Graph
-     */
-    public function setAlltimeMaxHeight(float $allTimeMaxHeight): Graph
-    {
-        $this->allTimeMaxHeight = $allTimeMaxHeight;
 
         return $this;
     }
@@ -129,9 +115,9 @@ class Graph
     /**
      * @param int $width
      *
-     * @return Graph
+     * @return Chart
      */
-    public function setWidth(int $width): Graph
+    public function setWidth(int $width): Chart
     {
         $this->width = $width;
 
@@ -147,9 +133,9 @@ class Graph
     }
 
     /**
-     * @return Graph
+     * @return Chart
      */
-    public function printAndwait(): Graph
+    public function printAndwait(): Chart
     {
         $this->print()->wait();
 
@@ -157,9 +143,9 @@ class Graph
     }
 
     /**
-     * @return Graph
+     * @return Chart
      */
-    public function wait(): Graph
+    public function wait(): Chart
     {
         usleep((int) round(1000000 / $this->settings->getFps()));
 
@@ -167,11 +153,11 @@ class Graph
     }
 
     /**
-     * @return Graph
+     * @return Chart
      */
-    public function print(): Graph
+    public function print(): Chart
     {
-        fwrite(STDOUT, $this->__toString());
+        fwrite(fopen('php://stdout', 'wb'), $this->__toString());
 
         return $this;
     }
@@ -186,10 +172,10 @@ class Graph
             foreach ($row as $cell) {
                 $return .= $cell;
             }
-            $return .= PHP_EOL;
+            $return .= $this->settings->getColorizer()->getEOL();
         }
 
-        return $return;
+        return $this->settings->getColorizer()->processFinalText($return);
     }
 
     /**
@@ -197,12 +183,13 @@ class Graph
      */
     private function merge(): array
     {
+        $x = 0;
         $merged = [];
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
                 foreach ($row as $y => $cell) {
                     if ($this->shouldBeMerged($merged, $x, $y, $cell)) {
-                        $merged[$x][$y] = $cell;
+                        $merged[$x][$y] = (string) $cell;
                     }
                 }
             }
@@ -219,7 +206,9 @@ class Graph
     }
 
     /**
-     * @param $value
+     * @param $merged
+     * @param $x
+     * @param $y
      * @param $cell
      *
      * @return bool
@@ -245,17 +234,37 @@ class Graph
     }
 
     /**
-     * @param bool $quick
+     * @param bool $useAlternativeMethod
      *
-     * @return Graph
+     * @return Chart
      */
-    public function clearScreen(bool $quick = true): Graph
+    public function clearScreen(bool $useAlternativeMethod = null): Chart
     {
-        if ($quick) {
-            fwrite(STDOUT, "\033[0;0f"); //MoveCursor
+        if ($useAlternativeMethod) {
+            fwrite(fopen('php://stdout', 'wb'), \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J');   //^[H^[J
         } else {
-            fwrite(STDOUT, chr(27) . chr(91) . 'H' . chr(27) . chr(91) . 'J');   //^[H^[J
+            fwrite(fopen('php://stdout', 'wb'), "\033[0;0f"); //MoveCursor
         }
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAllTimeMaxHeight(): float
+    {
+        return $this->allTimeMaxHeight;
+    }
+
+    /**
+     * @param float $allTimeMaxHeight
+     *
+     * @return Chart
+     */
+    public function setAlltimeMaxHeight(float $allTimeMaxHeight): Chart
+    {
+        $this->allTimeMaxHeight = $allTimeMaxHeight;
 
         return $this;
     }

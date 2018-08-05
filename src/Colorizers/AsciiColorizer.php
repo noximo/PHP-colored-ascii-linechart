@@ -1,13 +1,7 @@
 <?php
 declare(strict_types = 1);
-/**
- * Created by PhpStorm.
- * User: TP
- * Date: 22.07.2018
- * Time: 21:35
- */
 
-namespace noximo\PHPColoredConsoleLinegraph;
+namespace noximo\PHPColoredAsciiLinechart\Colorizers;
 
 use ReflectionClass;
 
@@ -15,7 +9,7 @@ use ReflectionClass;
  * Class Colorize
  * @package noximo\PHPColoredConsoleLinegraph
  */
-abstract class Color
+class AsciiColorizer implements IColorizer
 {
     public const BOLD = 1;
     public const DARK = 2;
@@ -41,6 +35,7 @@ abstract class Color
     public const LIGHT_MAGENTA = 95;
     public const LIGHT_CYAN = 96;
     public const WHITE = 97;
+
     public const BACKGROUND_DEFAULT = 49;
     public const BACKGROUND_BLACK = 40;
     public const BACKGROUND_RED = 41;
@@ -69,15 +64,16 @@ abstract class Color
      * @throws ColorException
      * @throws \ReflectionException
      */
-    public static function colorize(string $text, array $colors): string
+    public function colorize(string $text, array $colors): string
     {
         foreach ($colors as $color) {
-            if (!self::colorExists($color)) {
+            if (!$this->colorExists($color)) {
                 throw new ColorException('Unknown color ' . $color . ', use constans of class Color');
             }
         }
 
         $result = \chr(27) . '[0m' . \chr(27) . '[' . implode(';', $colors) . 'm' . $text . \chr(27) . '[0m';
+
         return $result;
     }
 
@@ -87,7 +83,7 @@ abstract class Color
      * @return bool
      * @throws \ReflectionException
      */
-    public static function colorExists(int $color): bool
+    public function colorExists(int $color): bool
     {
         if (empty(self::$constants)) {
             $oClass = new ReflectionClass(__CLASS__);
@@ -95,5 +91,23 @@ abstract class Color
         }
 
         return \in_array($color, self::$constants, true);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEOL(): string
+    {
+        return PHP_EOL;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    public function processFinalText(string $text): string
+    {
+        return $text;
     }
 }

@@ -1,7 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace noximo\PHPColoredConsoleLinegraph;
+namespace noximo\PHPColoredAsciiLinechart;
+
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
+use noximo\PHPColoredAsciiLinechart\Colorizers\IColorizer;
 
 /**
  * Class Config
@@ -32,6 +35,10 @@ class Settings
      * @var int
      */
     private $fps = 12;
+    /**
+     * @var IColorizer
+     */
+    private $colorizer;
 
     /**
      * Settings constructor.
@@ -60,9 +67,13 @@ class Settings
      *
      * @return Settings
      */
-    public function setPadding(int $length, string $char = ' '): Settings
+    public function setPadding(int $length, string $char = null): Settings
     {
-        $padding = \strlen($char) === 0 ? ' ' : $char;
+        if ($char === null || $char === '') {
+            $padding = ' ';
+        } else {
+            $padding = $char;
+        }
         $this->padding = str_pad('', $length, $padding);
 
         return $this;
@@ -156,6 +167,26 @@ class Settings
     public function setFPS(int $fps): Settings
     {
         $this->fps = $fps;
+
+        return $this;
+    }
+
+    /**
+     * @return IColorizer
+     */
+    public function getColorizer(): IColorizer
+    {
+        return $this->colorizer ?? new AsciiColorizer();
+    }
+
+    /**
+     * @param IColorizer $colorizer
+     *
+     * @return Settings
+     */
+    public function setColorizer(IColorizer $colorizer): Settings
+    {
+        $this->colorizer = $colorizer;
 
         return $this;
     }
