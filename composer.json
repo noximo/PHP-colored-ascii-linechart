@@ -1,6 +1,15 @@
 {
   "name": "noximo/php-colored-ascii-linechart",
   "description": "Pretty line graphs in your console, html or images",
+  "keywords": [
+    "chart",
+    "graph",
+    "linechart",
+    "linegraph",
+    "ascii",
+    "marker",
+    "stock"
+  ],
   "type": "library",
   "authors": [
     {
@@ -15,8 +24,7 @@
   },
   "require": {
     "php": ">= 7.1",
-    "ext-json": ">=1.3.7",
-    "ext-gd": "^7.2"
+    "ext-json": ">=1.3.7"
   },
   "license": "MIT",
   "require-dev": {

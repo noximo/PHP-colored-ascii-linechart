@@ -33,7 +33,7 @@ $settings = new Settings();
 $settings
     ->setColorizer(new AsciiColorizer())//Colorizer, choose between Ascii, HTML and image colorizers
     ->setFPS(24)//control speed of chart::wait method
-    ->setHeight(30)//Set fixed height of chart. chart will scale accordingly
+    ->setHeight(30)//Set fixed height of chart. chart will scale accordingly. If not set, height will be calculated based on highest and lowest numbers across all sets of markers.
     ->setPadding(5, ' ')//Set lenght of a padding and character used
     ->setOffset(10)//Offset left border
     ->setFormat( //control how y axis labels will be printed out
