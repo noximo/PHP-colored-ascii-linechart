@@ -4,7 +4,7 @@
 
 Create beautiful, versatile ASCII line-charts within Terminal, written in `PHP`.
 
-- Create multiple lines in a single chart, each with it's own color,
+- Create multiple lines in a single chart, each with its own color,
 - Use points in your chart ,
 - Scale the chart to a desired height or let it grow and shrink freely,
 - Have multi-colored lines based on uptrends and downtrends,
