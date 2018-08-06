@@ -90,7 +90,7 @@ for ($y = 0; $y < 1200; $y++) { //Move sinusoid
 ```
 
 **This will produce this nice stuff in your console:**
-[![Sinus output](https://i.imgur.com/gH5xhM1.gif)](https://i.imgur.com/gH5xhM1.gif)
+[![Sinus output](https://i.imgur.com/Wc7OjvO.gif)](https://i.imgur.com/Wc7OjvO.gif)
 
 
 #### Do you prefer HTML output?
