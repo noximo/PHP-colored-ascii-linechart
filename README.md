@@ -70,7 +70,7 @@ for ($y = 0; $y < 1200; $y++) { // Move sinusoid
     $linechart->addLine(  // Add a guiding line - a zero line for example
         0,  // Alias y coordinate
         [AsciiColorizer::CYAN],  // You can set color the same way as with markers
-        Linechart::FULL_LINE  // Choose between full line and
+        Linechart::FULL_LINE  // Choose between full line and dashed line
     );
 
     $linechart->addPoint(
@@ -105,7 +105,7 @@ for ($i = 0; $i < +120; $i++) {
 }
 
 $linechart->addLine(0, ['color:white'], Linechart::FULL_LINE);  // Use css styles instead of ascii color codes
-$linechart->addMarkers($lineA, ['color: green'], ['color: red', 'background-color: black']);
+$linechart->addMarkers($lineA, ['color: green'], ['color: red']);
 $linechart->setSettings($settings);
 
 echo $linechart->chart();
