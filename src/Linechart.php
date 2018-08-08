@@ -135,7 +135,15 @@ class Linechart
         $markers = array_filter($markers, '\is_int', ARRAY_FILTER_USE_KEY);
         ksort($markers);
 
-        return $markers;
+        reset($markers);
+        $firstKey = key($markers);
+
+        $keys = [];
+        foreach (array_keys($markers) as $key) {
+            $keys[] = $key - $firstKey;
+        }
+
+        return array_combine($keys, $markers);
     }
 
     /**
