@@ -40,22 +40,15 @@ class Linechart
      * ]
      */
     private $allmarkers = [];
+
     /**
-     * @var int
-     */
-    private $allTimeMaxHeight = 0;
-    /**
-     * @var array
+     * @var array|null
      */
     private $currentColors;
 
     private $width;
     /**
-     * @var int
-     */
-    private $count;
-    /**
-     * @var int
+     * @var float
      */
     private $range;
     /**
@@ -183,18 +176,20 @@ class Linechart
      */
     public function chart(): Chart
     {
-        $graph = $this->prepareData();
+        $graph = new Chart($this);
+        $graph->setSettings($this->getSettings());
+        $this->prepareData();
 
         foreach ($this->allmarkers as $markersData) {
             $this->currentColors = $this->currentColors ?? $markersData['colors'];
             $result = $this->prepareResult();
 
-            $result = $this->processBorder($result, $markersData, $graph);
+            $result = $this->processBorder($result, $markersData);
             $isPoint = \in_array($markersData['point'], [self::CROSS, self::POINT], true);
             $isLine = \in_array($markersData['point'], [self::DASHED_LINE, self::FULL_LINE], true);
 
             foreach ($markersData['markers'] as $x => $value) {
-                $y0 = (int) round($value * $this->ratio) - $this->min2;
+                $y0 = (int) (round($value * $this->ratio) - $this->min2);
 
                 if ($this->isPresent($markersData['markers'], $x + 1)) {
                     $result = $this->processLinearGraph($result, $markersData, $x, $y0);
@@ -208,38 +203,6 @@ class Linechart
             $this->currentColors = null;
             $graph->addResult($result);
         }
-
-        return $graph;
-    }
-
-    /**
-     * @return Chart
-     */
-    private function prepareData(): Chart
-    {
-        $graph = new Chart();
-        $graph->setSettings($this->getSettings());
-
-        $this->colorizer = $this->getSettings()->getColorizer();
-        $this->findMinMax($graph, $this->allmarkers);
-
-        $this->width = $graph->getWidth();
-        $this->count = $graph->getWidth();
-
-        $this->range = (int) max(1, abs($graph->getMax() - $graph->getMin()));
-        $this->getSettings()->setComputedHeight($this->range);
-
-        $graph->setAlltimeMaxHeight($this->allTimeMaxHeight);
-
-        $this->ratio = $this->getSettings()->getHeight() / $this->range;
-        $this->min2 = (int) round($graph->getMin() * $this->ratio);
-        $this->max2 = (int) round($graph->getMax() * $this->ratio);
-
-        $this->rows = max(1, abs($this->max2 - $this->min2));
-
-        $this->allTimeMaxHeight = max($this->allTimeMaxHeight, $this->rows);
-        $this->offset = $this->getSettings()->getOffset();
-        $this->width += $this->offset;
 
         return $graph;
     }
@@ -268,18 +231,39 @@ class Linechart
         return $this;
     }
 
+    private function prepareData(): void
+    {
+        $this->colorizer = $this->getSettings()->getColorizer();
+        [$min, $max, $width] = $this->findMinMax($this->allmarkers);
+
+        $this->range = max(1, abs($max - $min));
+
+        $height = $this->getSettings()->getHeight() ?? $this->range;
+        $this->ratio = $height / $this->range;
+
+        $this->min2 = $min * $this->ratio;
+        $this->max2 = $max * $this->ratio;
+
+        $this->rows = (int) max(1, abs(round($this->max2 - $this->min2)));
+
+        $this->offset = $this->getSettings()->getOffset();
+
+        $this->width = $width + $this->offset;
+    }
+
     /**
-     * @param Chart $graph
      * @param array $allmarkers
+     *
+     * @return array
      */
-    private function findMinMax(Chart $graph, array $allmarkers): void
+    private function findMinMax(array $allmarkers): array
     {
         $width = 0;
         $min = PHP_INT_MAX;
         $max = -PHP_INT_MAX;
         foreach ($allmarkers as $markers) {
             end($markers['markers']);
-            $width = max($width, key($markers['markers']));
+            $width = (int) max($width, key($markers['markers']));
 
             /** @var int[][] $markers */
             foreach ($markers['markers'] as $value) {
@@ -290,9 +274,7 @@ class Linechart
             }
         }
 
-        $graph->setMax($max);
-        $graph->setMin($min);
-        $graph->setWidth($width);
+        return [$min, $max, $width];
     }
 
     /**
@@ -313,16 +295,18 @@ class Linechart
     /**
      * @param array $result
      * @param array $markersData
-     * @param Chart $graph
      *
      * @return array
      */
-    private function processBorder(array $result, array $markersData, Chart $graph): array
+    private function processBorder(array $result, array $markersData): array
     {
         $format = $this->getSettings()->getFormat();
-        $y0 = (int) round($markersData['markers'][0] * $this->ratio) - $this->min2;
-        for ($y = $this->min2; $y <= $this->max2; ++$y) {
-            $rawLabel = $graph->getMax() - ($y - $this->min2) * $this->range / $this->rows;
+        $y0 = (int) (round($markersData['markers'][0] * $this->ratio) - $this->min2);
+        $y = (int) floor($this->min2);
+        $yMax = (int) ceil($this->max2);
+
+        for (; $y <= $yMax; ++$y) {
+            $rawLabel = $this->max2 / $this->ratio - ($y - $this->min2) * $this->range / $this->rows;
             $label = $format($rawLabel, $this->getSettings());
 
             $border = '┤';
@@ -346,7 +330,7 @@ class Linechart
      */
     private function isPresent(array $markers, int $x): bool
     {
-        return isset($markers[$x]) && ($markers[$x] !== null || $markers[$x] !== false);
+        return isset($markers[$x]) && ($markers[$x] !== null && $markers[$x] !== false);
     }
 
     /**
@@ -359,7 +343,7 @@ class Linechart
      */
     private function processLinearGraph(array $result, array $markersData, int $x, int $y): array
     {
-        $y1 = (int) round($markersData['markers'][$x + 1] * $this->ratio) - $this->min2;
+        $y1 = (int) (round($markersData['markers'][$x + 1] * $this->ratio) - $this->min2);
         if ($y === $y1) {
             $result[$this->rows - $y][$x + $this->offset] = $this->colorizer->colorize('─', $this->currentColors);
         } else {

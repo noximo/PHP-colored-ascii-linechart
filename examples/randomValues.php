@@ -7,6 +7,7 @@ use noximo\PHPColoredAsciiLinechart\Settings;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $settings = new Settings();
+$settings->setHeight(30);
 $settings->setFPS(120);
 $lineGraph = new Linechart();
 $lineGraph->setSettings($settings);

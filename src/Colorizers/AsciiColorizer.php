@@ -58,14 +58,18 @@ class AsciiColorizer implements IColorizer
 
     /**
      * @param string $text
-     * @param int ...$colors
+     * @param array|null $colors
      *
      * @return string
      * @throws ColorException
      * @throws \ReflectionException
      */
-    public function colorize(string $text, array $colors): string
+    public function colorize(string $text, ?array $colors = null): string
     {
+        if ($colors === null) {
+            return $text;
+        }
+
         foreach ($colors as $color) {
             if (!$this->colorExists($color)) {
                 throw new ColorException('Unknown color ' . $color . ', use constans of class Color');
@@ -78,7 +82,7 @@ class AsciiColorizer implements IColorizer
     }
 
     /**
-     * @param $color
+     * @param int $color
      *
      * @return bool
      * @throws \ReflectionException

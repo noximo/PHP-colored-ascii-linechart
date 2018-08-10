@@ -12,12 +12,16 @@ class HTMLColorizer implements IColorizer
 
     /**
      * @param string $text
-     * @param array $styles
+     * @param array|null $styles
      *
      * @return string
      */
-    public function colorize(string $text, array $styles): string
+    public function colorize(string $text, ?array $styles = null): string
     {
+        if ($styles === null) {
+            return $text;
+        }
+
         return "<span style='" . implode(';', str_replace(' ', '', $styles)) . "'>" . $text . '</span>';
     }
 

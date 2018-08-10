@@ -12,11 +12,11 @@ class ImageColorizer implements IColorizer
 
     /**
      * @param string $text
-     * @param array $styles
+     * @param array|null $styles
      *
      * @return string
      */
-    public function colorize(string $text, array $styles): string
+    public function colorize(string $text, ?array $styles = null): string
     {
         return $text;
     }
