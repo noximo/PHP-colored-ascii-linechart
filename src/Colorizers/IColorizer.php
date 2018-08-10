@@ -11,11 +11,11 @@ interface IColorizer
 {
     /**
      * @param string $text
-     * @param array $colors
+     * @param array|null $colors
      *
      * @return string
      */
-    public function colorize(string $text, array $colors): string;
+    public function colorize(string $text, ?array $colors = null): string;
 
     /**
      * @return string

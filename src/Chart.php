@@ -35,6 +35,12 @@ class Chart
      * @var int
      */
     private $allTimeMaxHeight = 0;
+    private $chart;
+
+    public function __construct(Linechart $chart)
+    {
+        $this->chart = $chart;
+    }
 
     /**
      * @return Settings
@@ -157,7 +163,10 @@ class Chart
      */
     public function print(): Chart
     {
-        fwrite(fopen('php://stdout', 'wb'), $this->__toString());
+        $fopen = fopen('php://stdout', 'wb');
+        if (\is_resource($fopen)) {
+            fwrite($fopen, $this->__toString());
+        }
 
         return $this;
     }
@@ -188,7 +197,7 @@ class Chart
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
                 foreach ($row as $y => $cell) {
-                    if ($this->shouldBeMerged($merged, $x, $y, $cell)) {
+                    if ($this->shouldBeMerged($merged, (string)$x, (string)$y, (string)$cell)) {
                         $merged[$x][$y] = (string) $cell;
                     }
                 }
@@ -206,14 +215,14 @@ class Chart
     }
 
     /**
-     * @param $merged
-     * @param $x
-     * @param $y
-     * @param $cell
+     * @param array $merged
+     * @param string $x
+     * @param string $y
+     * @param string $cell
      *
      * @return bool
      */
-    private function shouldBeMerged($merged, $x, $y, $cell): bool
+    private function shouldBeMerged(array $merged, string $x, string $y, string $cell): bool
     {
         return !isset($merged[$x][$y]) || ($cell !== ' ' && strpos($merged[$x][$y], 'm') === false);
     }
@@ -240,10 +249,13 @@ class Chart
      */
     public function clearScreen(bool $useAlternativeMethod = null): Chart
     {
-        if ($useAlternativeMethod) {
-            fwrite(fopen('php://stdout', 'wb'), \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J');   //^[H^[J
-        } else {
-            fwrite(fopen('php://stdout', 'wb'), "\033[0;0f"); //MoveCursor
+        $output = fopen('php://stdout', 'wb');
+        if (\is_resource($output)) {
+            if ($useAlternativeMethod) {
+                fwrite($output, \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J');   //^[H^[J
+            } else {
+                fwrite($output, "\033[0;0f"); //MoveCursor
+            }
         }
 
         return $this;
@@ -252,17 +264,19 @@ class Chart
     /**
      * @return float
      */
-    public function getAllTimeMaxHeight(): float
+    public
+    function getAllTimeMaxHeight(): float
     {
         return $this->allTimeMaxHeight;
     }
 
     /**
-     * @param float $allTimeMaxHeight
+     * @param int $allTimeMaxHeight
      *
      * @return Chart
      */
-    public function setAlltimeMaxHeight(float $allTimeMaxHeight): Chart
+    public
+    function setAlltimeMaxHeight(int $allTimeMaxHeight): Chart
     {
         $this->allTimeMaxHeight = $allTimeMaxHeight;
 

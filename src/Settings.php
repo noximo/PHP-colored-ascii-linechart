@@ -100,14 +100,6 @@ class Settings
     }
 
     /**
-     * @param int $range
-     */
-    public function setComputedHeight(int $range): void
-    {
-        $this->height = $this->height ?? $range;
-    }
-
-    /**
      * @return int
      */
     public function getOffset(): int
