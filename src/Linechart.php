@@ -56,11 +56,11 @@ class Linechart
      */
     private $ratio;
     /**
-     * @var int
+     * @var float
      */
     private $min2;
     /**
-     * @var int
+     * @var float
      */
     private $max2;
     /**
@@ -319,11 +319,11 @@ class Linechart
     }
 
     /**
-     * @param $markers
+     * @param array $markers
      *
      * @return array
      */
-    private function adjustMarkerValues($markers): array
+    private function adjustMarkerValues(array $markers): array
     {
         if ($this->adjuster === null) {
             return $markers;
