@@ -92,7 +92,7 @@ class Settings
      *
      * @return Settings
      */
-    public function setHeight(int $height): Settings
+    public function setHeight(?int $height): Settings
     {
         $this->height = $height;
 

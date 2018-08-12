@@ -75,6 +75,10 @@ class Linechart
      * @var IColorizer
      */
     private $colorizer;
+    /**
+     * @var float|null
+     */
+    private $adjuster;
 
     /**
      * @param int $x alias x coordinate
@@ -181,6 +185,7 @@ class Linechart
         $this->prepareData();
 
         foreach ($this->allmarkers as $markersData) {
+            $markersData['markers'] = $this->adjustMarkerValues($markersData['markers']);
             $this->currentColors = $this->currentColors ?? $markersData['colors'];
             $result = $this->prepareResult();
 
@@ -236,9 +241,13 @@ class Linechart
         $this->colorizer = $this->getSettings()->getColorizer();
         [$min, $max, $width] = $this->findMinMax($this->allmarkers);
 
+        $this->adjuster = $this->findAdjuster($min, $max);
+        $max = $this->adjust($max);
+        $min = $this->adjust($min);
+
         $this->range = max(1, abs($max - $min));
 
-        $height = $this->getSettings()->getHeight() ?? $this->range;
+        $height = (int) ($this->getSettings()->getHeight() ?? $this->range);
         $this->ratio = $height / $this->range;
 
         $this->min2 = $min * $this->ratio;
@@ -278,6 +287,54 @@ class Linechart
     }
 
     /**
+     * @param float $min
+     * @param float $max
+     *
+     * @return float|null
+     */
+    private function findAdjuster(float $min, float $max): ?float
+    {
+        $adjuster = null;
+        $realMin = $max - $min;
+
+        if ($realMin < 1 && $realMin > 0) {
+            $adjuster = 1 / $realMin;
+        }
+
+        return $adjuster;
+    }
+
+    /**
+     * @param float $number
+     *
+     * @return float
+     */
+    private function adjust(float $number): float
+    {
+        if ($this->adjuster !== null) {
+            $number *= $this->adjuster;
+        }
+
+        return $number;
+    }
+
+    /**
+     * @param $markers
+     *
+     * @return array
+     */
+    private function adjustMarkerValues($markers): array
+    {
+        if ($this->adjuster === null) {
+            return $markers;
+        }
+
+        return array_map(function ($value) {
+            return $value * $this->adjuster;
+        }, $markers);
+    }
+
+    /**
      * @return array
      */
     private function prepareResult(): array
@@ -307,6 +364,7 @@ class Linechart
 
         for (; $y <= $yMax; ++$y) {
             $rawLabel = $this->max2 / $this->ratio - ($y - $this->min2) * $this->range / $this->rows;
+            $rawLabel = $this->deadjust($rawLabel);
             $label = $format($rawLabel, $this->getSettings());
 
             $border = '┤';
@@ -320,6 +378,20 @@ class Linechart
         }
 
         return $result;
+    }
+
+    /**
+     * @param float $number
+     *
+     * @return float
+     */
+    private function deadjust(float $number): float
+    {
+        if ($this->adjuster !== null) {
+            $number /= $this->adjuster;
+        }
+
+        return $number;
     }
 
     /**
