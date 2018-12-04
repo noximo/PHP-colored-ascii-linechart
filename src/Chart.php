@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart;
 
@@ -163,18 +163,26 @@ class Chart
      */
     public function print(): Chart
     {
-        $fopen = fopen('php://stdout', 'wb');
-        if (\is_resource($fopen)) {
-            fwrite($fopen, $this->__toString());
-        }
+        $this->output($this->outputChart());
 
         return $this;
     }
 
     /**
+     * @param string $output
+     */
+    private function output(string $output): void
+    {
+        $fopen = fopen('php://stdout', 'wb');
+        if (\is_resource($fopen)) {
+            fwrite($fopen, $output);
+        }
+    }
+
+    /**
      * @return string
      */
-    public function __toString(): string
+    public function outputChart(): string
     {
         $return = '';
         foreach ($this->merge() as $row) {
@@ -197,7 +205,7 @@ class Chart
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
                 foreach ($row as $y => $cell) {
-                    if ($this->shouldBeMerged($merged, (string)$x, (string)$y, (string)$cell)) {
+                    if ($this->shouldBeMerged($merged, (string) $x, (string) $y, (string) $cell)) {
                         $merged[$x][$y] = (string) $cell;
                     }
                 }
@@ -249,14 +257,13 @@ class Chart
      */
     public function clearScreen(bool $useAlternativeMethod = null): Chart
     {
-        $output = fopen('php://stdout', 'wb');
-        if (\is_resource($output)) {
-            if ($useAlternativeMethod) {
-                fwrite($output, \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J');   //^[H^[J
-            } else {
-                fwrite($output, "\033[0;0f"); //MoveCursor
-            }
+        if ($useAlternativeMethod) {
+            $output = \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J';
+        } else {
+            $output = "\033[0;0f";
         }
+
+        $this->output($output);
 
         return $this;
     }
@@ -264,8 +271,7 @@ class Chart
     /**
      * @return float
      */
-    public
-    function getAllTimeMaxHeight(): float
+    public function getAllTimeMaxHeight(): float
     {
         return $this->allTimeMaxHeight;
     }
@@ -275,11 +281,32 @@ class Chart
      *
      * @return Chart
      */
-    public
-    function setAlltimeMaxHeight(int $allTimeMaxHeight): Chart
+    public function setAlltimeMaxHeight(int $allTimeMaxHeight): Chart
     {
         $this->allTimeMaxHeight = $allTimeMaxHeight;
 
         return $this;
+    }
+
+    public function printText(): self
+    {
+        $return = '';
+        foreach ($this->chart->getText() as $row) {
+            $return .= $this->settings->getColorizer()->colorize($row[Linechart::VALUE], $row[Linechart::COLORS]);
+            $return .= $this->settings->getColorizer()->getEOL();
+        }
+
+        $return = $this->settings->getColorizer()->processFinalText($return);
+
+        $this->output($return);
+
+        $this->chart->clearText();
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->outputChart();
     }
 }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart;
 
@@ -11,32 +11,24 @@ use noximo\PHPColoredAsciiLinechart\Colorizers\IColorizer;
  */
 class Linechart
 {
-    /**
-     * @var string
-     */
     public const CROSS = 'cross';
-
-    /**
-     * @var string
-     */
     public const POINT = 'point';
-
-    /**
-     * @var string
-     */
     public const DASHED_LINE = 'dashedLine';
-
-    /**
-     * @var string
-     */
+    public const POINT_X = 'x';
+    public const POINT_Y = 'y';
+    public const VALUE = 'value';
+    public const COLORS = 'colors';
     public const FULL_LINE = 'fullLIne';
+    public const MARKERS = 'markers';
+    public const COLORS_DOWN = 'colorsDown';
+
     /**
      * @var Settings
      */
     private $settings;
     /**
      * @var array $allmarkers = [
-     * [['markers' => [1,2,3.45], 'colors' => [1,2,3]]];
+     * [['markers' => [1,2,3.45], SELF::COLORS => [1,2,3]]];
      * ]
      */
     private $allmarkers = [];
@@ -79,6 +71,8 @@ class Linechart
      * @var float|null
      */
     private $adjuster;
+    /** @var array */
+    private $text = [];
 
     /**
      * @param int $x alias x coordinate
@@ -111,10 +105,10 @@ class Linechart
     private function addMarkerData(array $markers, array $colors = null, array $colorsDown = null, string $point = null): Linechart
     {
         $markersData = [
-            'markers' => $this->normalizeData($markers),
-            'colors' => $colors ?? [],
-            'colorsDown' => $colorsDown ?? $colors ?? [],
-            'point' => $point,
+            self::MARKERS => $this->normalizeData($markers),
+            self::COLORS => $colors ?? [],
+            self::COLORS_DOWN => $colorsDown ?? $colors ?? [],
+            self::POINT => $point,
         ];
 
         $this->allmarkers[] = $markersData;
@@ -185,23 +179,23 @@ class Linechart
         $this->prepareData();
 
         foreach ($this->allmarkers as $markersData) {
-            $markersData['markers'] = $this->adjustMarkerValues($markersData['markers']);
-            $this->currentColors = $this->currentColors ?? $markersData['colors'];
+            $markersData[self::MARKERS] = $this->adjustMarkerValues($markersData[self::MARKERS]);
+            $this->currentColors = $this->currentColors ?? $markersData[self::COLORS];
             $result = $this->prepareResult();
 
             $result = $this->processBorder($result, $markersData);
-            $isPoint = \in_array($markersData['point'], [self::CROSS, self::POINT], true);
-            $isLine = \in_array($markersData['point'], [self::DASHED_LINE, self::FULL_LINE], true);
+            $isPoint = \in_array($markersData[self::POINT], [self::CROSS, self::POINT], true);
+            $isLine = \in_array($markersData[self::POINT], [self::DASHED_LINE, self::FULL_LINE], true);
 
-            foreach ($markersData['markers'] as $x => $value) {
+            foreach ($markersData[self::MARKERS] as $x => $value) {
                 $y0 = (int) (round($value * $this->ratio) - $this->min2);
 
-                if ($this->isPresent($markersData['markers'], $x + 1)) {
+                if ($this->isPresent($markersData[self::MARKERS], $x + 1)) {
                     $result = $this->processLinearGraph($result, $markersData, $x, $y0);
                 } elseif ($x !== 0 && $isPoint) {
                     $result = $this->processPoint($result, $markersData, $y0, $x);
                 } elseif ($x === 0 && $isLine) {
-                    $result = $this->processLine($result, $y0, $markersData['point']);
+                    $result = $this->processLine($result, $y0, $markersData[self::POINT]);
                 }
             }
 
@@ -271,11 +265,11 @@ class Linechart
         $min = PHP_INT_MAX;
         $max = -PHP_INT_MAX;
         foreach ($allmarkers as $markers) {
-            end($markers['markers']);
-            $width = (int) max($width, key($markers['markers']));
+            end($markers[self::MARKERS]);
+            $width = (int) max($width, key($markers[self::MARKERS]));
 
             /** @var int[][] $markers */
-            foreach ($markers['markers'] as $value) {
+            foreach ($markers[self::MARKERS] as $value) {
                 if ($value !== null && $value !== false) {
                     $min = min($min, $value);
                     $max = max($max, $value);
@@ -358,7 +352,7 @@ class Linechart
     private function processBorder(array $result, array $markersData): array
     {
         $format = $this->getSettings()->getFormat();
-        $y0 = (int) (round($markersData['markers'][0] * $this->ratio) - $this->min2);
+        $y0 = (int) (round($markersData[self::MARKERS][0] * $this->ratio) - $this->min2);
         $y = (int) floor($this->min2);
         $yMax = (int) ceil($this->max2);
 
@@ -415,7 +409,7 @@ class Linechart
      */
     private function processLinearGraph(array $result, array $markersData, int $x, int $y): array
     {
-        $y1 = (int) (round($markersData['markers'][$x + 1] * $this->ratio) - $this->min2);
+        $y1 = (int) (round($markersData[self::MARKERS][$x + 1] * $this->ratio) - $this->min2);
         if ($y === $y1) {
             $result[$this->rows - $y][$x + $this->offset] = $this->colorizer->colorize('─', $this->currentColors);
         } else {
@@ -423,12 +417,12 @@ class Linechart
                 $connectA = '╰';
                 $connectB = '╮';
 
-                $this->currentColors = $markersData['colorsDown'];
+                $this->currentColors = $markersData[self::COLORS_DOWN];
             } else {
                 $connectA = '╭';
                 $connectB = '╯';
 
-                $this->currentColors = $markersData['colors'];
+                $this->currentColors = $markersData[self::COLORS];
             }
             $result[$this->rows - $y1][$x + $this->offset] = $this->colorizer->colorize($connectA, $this->currentColors);
             $result[$this->rows - $y][$x + $this->offset] = $this->colorizer->colorize($connectB, $this->currentColors);
@@ -453,7 +447,7 @@ class Linechart
      */
     private function processPoint(array $result, array $markersData, int $y, int $x): array
     {
-        if ($markersData['point'] === self::CROSS) {
+        if ($markersData[self::POINT] === self::CROSS) {
             for ($i = 0; $i <= $this->width - $this->offset - 2; $i++) {
                 $result[$this->rows - $y][$i + $this->offset] = $this->colorizer->colorize('╌', $this->currentColors);
             }
@@ -496,5 +490,26 @@ class Linechart
         $this->allmarkers = [];
 
         return $this;
+    }
+
+    /**
+     * @param array|string[] $color
+     */
+    public function addText(string $value, array $color): void
+    {
+        $this->text[] = [
+            self::VALUE => $value,
+            self::COLORS => $color,
+        ];
+    }
+
+    public function getText(): array
+    {
+        return $this->text;
+    }
+
+    public function clearText(): void
+    {
+        $this->text = [];
     }
 }

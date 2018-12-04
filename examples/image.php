@@ -26,7 +26,7 @@ header('Content-Type: image/png');
 $font = __DIR__ . '/font/font.ttf';
 $fontSize = 40;
 
-$text = $graph->__toString();
+$text = $graph->outputChart();
 
 // Calculate the required width to hold this text
 $enclosingBox = imagettfbbox($fontSize, 0, $font, $text);

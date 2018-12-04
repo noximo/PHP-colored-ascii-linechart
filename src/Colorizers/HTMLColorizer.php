@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart\Colorizers;
 
@@ -22,7 +22,9 @@ class HTMLColorizer implements IColorizer
             return $text;
         }
 
-        return "<span style='" . implode(';', str_replace(' ', '', $styles)) . "'>" . $text . '</span>';
+        $cssStyles = implode(';', str_replace(' ', '', $styles));
+
+        return "<span style='" . $cssStyles . "'>" . $text . '</span>';
     }
 
     /**
