@@ -35,7 +35,10 @@ class Chart
      * @var int
      */
     private $allTimeMaxHeight = 0;
+    /** @var Linechart */
     private $chart;
+    /** @var int */
+    private $longestText = 0;
 
     public function __construct(Linechart $chart)
     {
@@ -111,14 +114,6 @@ class Chart
     }
 
     /**
-     * @return int
-     */
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-
-    /**
      * @param int $width
      *
      * @return Chart
@@ -163,7 +158,8 @@ class Chart
      */
     public function print(): Chart
     {
-        $this->output($this->outputChart());
+        $this->output($this->prepareChart());
+        $this->output($this->prepareText());
 
         return $this;
     }
@@ -182,7 +178,7 @@ class Chart
     /**
      * @return string
      */
-    public function outputChart(): string
+    private function prepareChart(): string
     {
         $return = '';
         foreach ($this->merge() as $row) {
@@ -269,14 +265,6 @@ class Chart
     }
 
     /**
-     * @return float
-     */
-    public function getAllTimeMaxHeight(): float
-    {
-        return $this->allTimeMaxHeight;
-    }
-
-    /**
      * @param int $allTimeMaxHeight
      *
      * @return Chart
@@ -290,23 +278,33 @@ class Chart
 
     public function printText(): self
     {
-        $return = '';
-        foreach ($this->chart->getText() as $row) {
-            $return .= $this->settings->getColorizer()->colorize($row[Linechart::VALUE], $row[Linechart::COLORS]);
-            $return .= $this->settings->getColorizer()->getEOL();
-        }
+        $text = $this->prepareText();
 
-        $return = $this->settings->getColorizer()->processFinalText($return);
-
-        $this->output($return);
-
-        $this->chart->clearText();
+        $this->output($text);
 
         return $this;
     }
 
     public function __toString()
     {
-        return $this->outputChart();
+        return $this->prepareChart() . $this->prepareText();
+    }
+
+    private function prepareText(): string
+    {
+        $return = '';
+        foreach ($this->chart->getText() as $row) {
+            $line = $this->settings->getColorizer()->colorize($row[Linechart::VALUE], $row[Linechart::COLORS]);
+            $lineLength = strlen($line);
+            $this->longestText = $lineLength > $this->longestText ? $lineLength : $this->longestText;
+            $line = str_pad($line, $this->longestText, ' ');
+            $return .= $line . $this->settings->getColorizer()->getEOL();
+        }
+
+        $return = $this->settings->getColorizer()->processFinalText($return);
+
+        $this->chart->clearText();
+
+        return $return;
     }
 }

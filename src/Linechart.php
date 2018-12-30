@@ -21,6 +21,7 @@ class Linechart
     public const FULL_LINE = 'fullLIne';
     public const MARKERS = 'markers';
     public const COLORS_DOWN = 'colorsDown';
+    public const SPREADS = 'spreads';
 
     /**
      * @var Settings
@@ -202,6 +203,8 @@ class Linechart
             $this->currentColors = null;
             $graph->addResult($result);
         }
+
+        $graph->setWidth($this->width);
 
         return $graph;
     }
@@ -501,6 +504,15 @@ class Linechart
             self::VALUE => $value,
             self::COLORS => $color,
         ];
+    }
+
+    public function addSpread(array $values, $mainValue, array $colors): void
+    {
+        foreach ($values as $value) {
+            $colors = $colors ?? [];
+            $appearance = $value === 1 ? self::FULL_LINE : self::DASHED_LINE;
+            $this->addLine($value * $mainValue, $colors ?? [], $appearance);
+        }
     }
 
     public function getText(): array
