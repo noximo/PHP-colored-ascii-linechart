@@ -1,0 +1,20 @@
+imports:
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/psr2.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/psr12.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/common.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/clean-code.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/php70.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/php71.yml' }
+  - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/symplify.yml' }
+services:
+
+parameters:
+  exclude_checkers:
+    - PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer
+    - Symplify\CodingStandard\Fixer\Naming\PropertyNameMatchingTypeFixer
+    - Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer
+    - Symplify\CodingStandard\Fixer\Naming\PropertyNameMatchingTypeFixer
+    - SlevomatCodingStandard\Sniffs\Namespaces\ReferenceUsedNamesOnlySniff
+    - Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff
+    - Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenStaticFunctionSniff
+    - SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingTraversableReturnTypeHintSpecification #DELETE

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart;
@@ -9,26 +10,34 @@ use noximo\PHPColoredAsciiLinechart\Colorizers\IColorizer;
  * Class LineGraph
  * @package noximo\PHPColoredConsoleLinegraph
  */
-class Linechart
+final class Linechart
 {
     public const CROSS = 'cross';
+
     public const POINT = 'point';
+
     public const DASHED_LINE = 'dashedLine';
+
     public const POINT_X = 'x';
+
     public const POINT_Y = 'y';
+
     public const VALUE = 'value';
+
     public const COLORS = 'colors';
+
     public const FULL_LINE = 'fullLIne';
+
     public const MARKERS = 'markers';
+
     public const COLORS_DOWN = 'colorsDown';
+
     public const SPREADS = 'spreads';
 
+    private $width;
+
     /**
-     * @var Settings
-     */
-    private $settings;
-    /**
-     * @var array $allmarkers = [
+     * @var array = [
      * [['markers' => [1,2,3.45], SELF::COLORS => [1,2,3]]];
      * ]
      */
@@ -39,51 +48,62 @@ class Linechart
      */
     private $currentColors;
 
-    private $width;
     /**
      * @var float
      */
     private $range;
+
     /**
      * @var float
      */
     private $ratio;
+
     /**
      * @var float
      */
     private $min2;
+
     /**
      * @var float
      */
     private $max2;
+
     /**
      * @var int
      */
     private $rows;
+
     /**
      * @var int
      */
     private $offset;
-    /**
-     * @var IColorizer
-     */
-    private $colorizer;
+
     /**
      * @var float|null
      */
     private $adjuster;
-    /** @var array */
+
+    /**
+     * @var array
+     */
     private $text = [];
+
+    /**
+     * @var Settings
+     */
+    private $settings;
+
+    /**
+     * @var IColorizer
+     */
+    private $colorizer;
 
     /**
      * @param int $x alias x coordinate
      * @param float $y alias y coordinate
-     * @param array $colors
      * @param string|null $appearance
-     *
-     * @return Linechart
      */
-    public function addPoint(int $x, float $y, array $colors = null, string $appearance = null): Linechart
+    public function addPoint(int $x, float $y, ?array $colors = null, ?string $appearance = null): self
     {
         $markers[0] = $y;
         $markers[$x] = $y;
@@ -96,56 +116,9 @@ class Linechart
     }
 
     /**
-     * @param array $markers
-     * @param array $colors
      * @param array|null $colorsDown
-     * @param string|null $point
-     *
-     * @return Linechart
      */
-    private function addMarkerData(array $markers, array $colors = null, array $colorsDown = null, string $point = null): Linechart
-    {
-        $markersData = [
-            self::MARKERS => $this->normalizeData($markers),
-            self::COLORS => $colors ?? [],
-            self::COLORS_DOWN => $colorsDown ?? $colors ?? [],
-            self::POINT => $point,
-        ];
-
-        $this->allmarkers[] = $markersData;
-
-        return $this;
-    }
-
-    /**
-     * @param array $markers
-     *
-     * @return array
-     */
-    private function normalizeData(array $markers): array
-    {
-        $markers = array_filter($markers, '\is_int', ARRAY_FILTER_USE_KEY);
-        ksort($markers);
-
-        reset($markers);
-        $firstKey = key($markers);
-
-        $keys = [];
-        foreach (array_keys($markers) as $key) {
-            $keys[] = $key - $firstKey;
-        }
-
-        return array_combine($keys, $markers);
-    }
-
-    /**
-     * @param array $markers
-     * @param array $colors
-     * @param array|null $colorsDown
-     *
-     * @return Linechart
-     */
-    public function addMarkers(array $markers, array $colors = null, array $colorsDown = null): Linechart
+    public function addMarkers(array $markers, ?array $colors = null, ?array $colorsDown = null): self
     {
         $this->addMarkerData($markers, $colors, $colorsDown);
 
@@ -154,12 +127,9 @@ class Linechart
 
     /**
      * @param float $value alias y coordinate
-     * @param array $colors
      * @param string|null $appearance
-     *
-     * @return Linechart
      */
-    public function addLine(float $value, array $colors = null, string $appearance = null): Linechart
+    public function addLine(float $value, ?array $colors = null, ?string $appearance = null): self
     {
         $markers[0] = $value;
         if (!\in_array($appearance, [self::DASHED_LINE, self::FULL_LINE], true)) {
@@ -169,10 +139,7 @@ class Linechart
 
         return $this;
     }
-
-    /**
-     * @return Chart
-     */
+    
     public function chart(): Chart
     {
         $graph = new Chart($this);
@@ -208,10 +175,7 @@ class Linechart
 
         return $graph;
     }
-
-    /**
-     * @return Settings
-     */
+    
     public function getSettings(): Settings
     {
         if ($this->settings === null) {
@@ -220,15 +184,65 @@ class Linechart
 
         return $this->settings;
     }
-
-    /**
-     * @param Settings $settings
-     *
-     * @return Linechart
-     */
-    public function setSettings(Settings $settings): Linechart
+    
+    public function setSettings(Settings $settings): self
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+    
+    public function clearAllMarkers(): self
+    {
+        $this->allmarkers = [];
+
+        return $this;
+    }
+
+    /**
+     * @param string[] $color
+     */
+    public function addText(string $value, array $color): void
+    {
+        $this->text[] = [
+            self::VALUE => $value,
+            self::COLORS => $color,
+        ];
+    }
+
+    public function addSpread(array $values, $mainValue, array $colors): void
+    {
+        foreach ($values as $value) {
+            $colors = $colors ?? [];
+            $appearance = $value === 1 ? self::FULL_LINE : self::DASHED_LINE;
+            $this->addLine($value * $mainValue, $colors ?? [], $appearance);
+        }
+    }
+
+    public function getText(): array
+    {
+        return $this->text;
+    }
+
+    public function clearText(): void
+    {
+        $this->text = [];
+    }
+
+    /**
+     * @param array|null $colorsDown
+     * @param string|null $point
+     */
+    private function addMarkerData(array $markers, ?array $colors = null, ?array $colorsDown = null, ?string $point = null): self
+    {
+        $markersData = [
+            self::MARKERS => $this->normalizeData($markers),
+            self::COLORS => $colors ?? [],
+            self::COLORS_DOWN => $colorsDown ?? $colors ?? [],
+            self::POINT => $point,
+        ];
+
+        $this->allmarkers[] = $markersData;
 
         return $this;
     }
@@ -256,70 +270,7 @@ class Linechart
 
         $this->width = $width + $this->offset;
     }
-
-    /**
-     * @param array $allmarkers
-     *
-     * @return array
-     */
-    private function findMinMax(array $allmarkers): array
-    {
-        $width = 0;
-        $min = PHP_INT_MAX;
-        $max = -PHP_INT_MAX;
-        foreach ($allmarkers as $markers) {
-            end($markers[self::MARKERS]);
-            $width = (int) max($width, key($markers[self::MARKERS]));
-
-            /** @var int[][] $markers */
-            foreach ($markers[self::MARKERS] as $value) {
-                if ($value !== null && $value !== false) {
-                    $min = min($min, $value);
-                    $max = max($max, $value);
-                }
-            }
-        }
-
-        return [$min, $max, $width];
-    }
-
-    /**
-     * @param float $min
-     * @param float $max
-     *
-     * @return float|null
-     */
-    private function findAdjuster(float $min, float $max): ?float
-    {
-        $adjuster = null;
-        $realMin = $max - $min;
-
-        if ($realMin < 1 && $realMin > 0) {
-            $adjuster = 1 / $realMin;
-        }
-
-        return $adjuster;
-    }
-
-    /**
-     * @param float $number
-     *
-     * @return float
-     */
-    private function adjust(float $number): float
-    {
-        if ($this->adjuster !== null) {
-            $number *= $this->adjuster;
-        }
-
-        return $number;
-    }
-
-    /**
-     * @param array $markers
-     *
-     * @return array
-     */
+    
     private function adjustMarkerValues(array $markers): array
     {
         if ($this->adjuster === null) {
@@ -330,10 +281,7 @@ class Linechart
             return $value * $this->adjuster;
         }, $markers);
     }
-
-    /**
-     * @return array
-     */
+    
     private function prepareResult(): array
     {
         $result = [];
@@ -345,13 +293,7 @@ class Linechart
 
         return $result;
     }
-
-    /**
-     * @param array $result
-     * @param array $markersData
-     *
-     * @return array
-     */
+    
     private function processBorder(array $result, array $markersData): array
     {
         $format = $this->getSettings()->getFormat();
@@ -376,40 +318,12 @@ class Linechart
 
         return $result;
     }
-
-    /**
-     * @param float $number
-     *
-     * @return float
-     */
-    private function deadjust(float $number): float
-    {
-        if ($this->adjuster !== null) {
-            $number /= $this->adjuster;
-        }
-
-        return $number;
-    }
-
-    /**
-     * @param array $markers
-     * @param int $x
-     *
-     * @return bool
-     */
+    
     private function isPresent(array $markers, int $x): bool
     {
         return isset($markers[$x]) && ($markers[$x] !== null && $markers[$x] !== false);
     }
-
-    /**
-     * @param array $result
-     * @param array $markersData
-     * @param int $x
-     * @param int $y
-     *
-     * @return array
-     */
+    
     private function processLinearGraph(array $result, array $markersData, int $x, int $y): array
     {
         $y1 = (int) (round($markersData[self::MARKERS][$x + 1] * $this->ratio) - $this->min2);
@@ -439,15 +353,7 @@ class Linechart
 
         return $result;
     }
-
-    /**
-     * @param array $result
-     * @param array $markersData
-     * @param int $y
-     * @param int $x
-     *
-     * @return array
-     */
+    
     private function processPoint(array $result, array $markersData, int $y, int $x): array
     {
         if ($markersData[self::POINT] === self::CROSS) {
@@ -463,14 +369,7 @@ class Linechart
 
         return $result;
     }
-
-    /**
-     * @param array $result
-     * @param int $y
-     * @param string $lineStyle
-     *
-     * @return array
-     */
+    
     private function processLine(array $result, int $y, string $lineStyle): array
     {
         $line = '╌';
@@ -484,44 +383,71 @@ class Linechart
 
         return $result;
     }
-
-    /**
-     * @return Linechart
-     */
-    public function clearAllMarkers(): Linechart
+    
+    private function normalizeData(array $markers): array
     {
-        $this->allmarkers = [];
+        $markers = array_filter($markers, '\is_int', ARRAY_FILTER_USE_KEY);
+        ksort($markers);
 
-        return $this;
-    }
+        reset($markers);
+        $firstKey = key($markers);
 
-    /**
-     * @param array|string[] $color
-     */
-    public function addText(string $value, array $color): void
-    {
-        $this->text[] = [
-            self::VALUE => $value,
-            self::COLORS => $color,
-        ];
-    }
-
-    public function addSpread(array $values, $mainValue, array $colors): void
-    {
-        foreach ($values as $value) {
-            $colors = $colors ?? [];
-            $appearance = $value === 1 ? self::FULL_LINE : self::DASHED_LINE;
-            $this->addLine($value * $mainValue, $colors ?? [], $appearance);
+        $keys = [];
+        foreach (array_keys($markers) as $key) {
+            $keys[] = $key - $firstKey;
         }
-    }
 
-    public function getText(): array
-    {
-        return $this->text;
+        return array_combine($keys, $markers);
     }
-
-    public function clearText(): void
+    
+    private function findMinMax(array $allmarkers): array
     {
-        $this->text = [];
+        $width = 0;
+        $min = PHP_INT_MAX;
+        $max = -PHP_INT_MAX;
+        foreach ($allmarkers as $markers) {
+            end($markers[self::MARKERS]);
+            $width = (int) max($width, key($markers[self::MARKERS]));
+
+            /** @var int[][] $markers */
+            foreach ($markers[self::MARKERS] as $value) {
+                if ($value !== null && $value !== false) {
+                    $min = min($min, $value);
+                    $max = max($max, $value);
+                }
+            }
+        }
+
+        return [$min, $max, $width];
+    }
+    
+    private function findAdjuster(float $min, float $max): ?float
+    {
+        $adjuster = null;
+        $realMin = $max - $min;
+
+        if ($realMin < 1 && $realMin > 0) {
+            $adjuster = 1 / $realMin;
+        }
+
+        return $adjuster;
+    }
+    
+    private function adjust(float $number): float
+    {
+        if ($this->adjuster !== null) {
+            $number *= $this->adjuster;
+        }
+
+        return $number;
+    }
+    
+    private function deadjust(float $number): float
+    {
+        if ($this->adjuster !== null) {
+            $number /= $this->adjuster;
+        }
+
+        return $number;
     }
 }

@@ -28,7 +28,26 @@
   },
   "license": "MIT",
   "require-dev": {
-    "nette/tester": "1.7.2",
-    "phpstan/phpstan": "^0.10.6"
+    "grifart/phpstan-oneline": "^0.2.0",
+    "jakub-onderka/php-console-highlighter": "^0.4",
+    "jakub-onderka/php-parallel-lint": "1.0.*",
+    "noximo/phpstan-fileoutput": "0.1.*",
+    "phpstan/phpstan": "^0.10.5",
+    "phpstan/phpstan-deprecation-rules": "^0.10.2",
+    "phpstan/phpstan-nette": "^0.10.1",
+    "phpstan/phpstan-strict-rules": "^0.10.1",
+    "roave/security-advisories": "dev-master",
+    "symplify/easy-coding-standard": "^5.3"
+  },
+  "scripts": {
+    "check-cs": "ecs check src",
+    "fix-cs": "ecs check src --fix",
+    "lint": "parallel-lint --colors --exclude vendor .",
+    "phpstan": "phpstan analyze src --level max -c phpstan.neon --error-format=fileoutput",
+    "test": [
+      "@lint",
+      "@check-cs",
+      "@phpstan"
+    ]
   }
 }

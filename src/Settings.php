@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart;
 
@@ -10,8 +11,13 @@ use noximo\PHPColoredAsciiLinechart\Colorizers\IColorizer;
  * Class Config
  * @package noximo\PHPColoredConsoleLinegraph
  */
-class Settings
+final class Settings
 {
+    /**
+     * @var callable
+     */
+    private $format;
+
     /**
      * @var int
      */
@@ -23,18 +29,15 @@ class Settings
     private $padding = '      ';
 
     /**
-     * @var callable
+     * @var int
      */
-    private $format;
+    private $height;
 
     /**
      * @var int
      */
-    private $height;
-    /**
-     * @var int
-     */
     private $fps = 12;
+
     /**
      * @var IColorizer
      */
@@ -45,29 +48,20 @@ class Settings
      */
     public function __construct()
     {
-        $this->format = function ($x, Settings $settings) {
+        $this->format = function ($x, self $settings) {
             $padding = $settings->getPadding();
             $paddingLength = \strlen($padding);
 
             return substr($padding . round($x, 2), -$paddingLength);
         };
     }
-
-    /**
-     * @return string
-     */
+    
     public function getPadding(): string
     {
         return $this->padding;
     }
-
-    /**
-     * @param int $length
-     * @param string $char
-     *
-     * @return Settings
-     */
-    public function setPadding(int $length, string $char = null): Settings
+    
+    public function setPadding(int $length, ?string $char = null): self
     {
         if ($char === null || $char === '') {
             $padding = ' ';
@@ -78,50 +72,31 @@ class Settings
 
         return $this;
     }
-
-    /**
-     * @return int|null
-     */
+    
     public function getHeight(): ?int
     {
         return $this->height;
     }
-
-    /**
-     * @param int $height
-     *
-     * @return Settings
-     */
-    public function setHeight(?int $height): Settings
+    
+    public function setHeight(?int $height): self
     {
         $this->height = $height;
 
         return $this;
     }
-
-    /**
-     * @return int
-     */
+    
     public function getOffset(): int
     {
         return $this->offset;
     }
-
-    /**
-     * @param int $offset
-     *
-     * @return Settings
-     */
-    public function setOffset(int $offset): Settings
+    
+    public function setOffset(int $offset): self
     {
         $this->offset = $offset;
 
         return $this;
     }
-
-    /**
-     * @return callable
-     */
+    
     public function getFormat(): callable
     {
         return $this->format;
@@ -133,50 +108,32 @@ class Settings
      * $paddingLength = strlen($padding);
      * return substr($padding . round($x, 2), -$paddingLength);
      * }
-     *
-     * @return Settings
      */
-    public function setFormat(callable $format): Settings
+    public function setFormat(callable $format): self
     {
         $this->format = $format;
 
         return $this;
     }
-
-    /**
-     * @return int
-     */
+    
     public function getFps(): int
     {
         return $this->fps;
     }
-
-    /**
-     * @param int $fps
-     *
-     * @return Settings
-     */
-    public function setFPS(int $fps): Settings
+    
+    public function setFPS(int $fps): self
     {
         $this->fps = $fps;
 
         return $this;
     }
-
-    /**
-     * @return IColorizer
-     */
+    
     public function getColorizer(): IColorizer
     {
         return $this->colorizer ?? new AsciiColorizer();
     }
-
-    /**
-     * @param IColorizer $colorizer
-     *
-     * @return Settings
-     */
-    public function setColorizer(IColorizer $colorizer): Settings
+    
+    public function setColorizer(IColorizer $colorizer): self
     {
         $this->colorizer = $colorizer;
 
