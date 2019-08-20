@@ -55,12 +55,12 @@ final class Settings
             return substr($padding . round($x, 2), -$paddingLength);
         };
     }
-    
+
     public function getPadding(): string
     {
         return $this->padding;
     }
-    
+
     public function setPadding(int $length, ?string $char = null): self
     {
         if ($char === null || $char === '') {
@@ -72,31 +72,31 @@ final class Settings
 
         return $this;
     }
-    
+
     public function getHeight(): ?int
     {
         return $this->height;
     }
-    
+
     public function setHeight(?int $height): self
     {
         $this->height = $height;
 
         return $this;
     }
-    
+
     public function getOffset(): int
     {
         return $this->offset;
     }
-    
+
     public function setOffset(int $offset): self
     {
         $this->offset = $offset;
 
         return $this;
     }
-    
+
     public function getFormat(): callable
     {
         return $this->format;
@@ -108,6 +108,7 @@ final class Settings
      * $paddingLength = strlen($padding);
      * return substr($padding . round($x, 2), -$paddingLength);
      * }
+     * @return Settings
      */
     public function setFormat(callable $format): self
     {
@@ -115,24 +116,24 @@ final class Settings
 
         return $this;
     }
-    
+
     public function getFps(): int
     {
         return $this->fps;
     }
-    
+
     public function setFPS(int $fps): self
     {
         $this->fps = $fps;
 
         return $this;
     }
-    
+
     public function getColorizer(): IColorizer
     {
         return $this->colorizer ?? new AsciiColorizer();
     }
-    
+
     public function setColorizer(IColorizer $colorizer): self
     {
         $this->colorizer = $colorizer;
