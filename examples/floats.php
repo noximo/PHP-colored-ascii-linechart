@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $settings = new Settings();
@@ -15,7 +16,7 @@ $lineGraph->setSettings($settings);
 try {
     $line = [];
     for ($i = 0; $i < 120; $i++) {
-        $line[$i] = ($lineA[$i - 1] ?? 1) + (lcg_value() * random_int(-1, 1));
+        $line[$i] = $lineA[$i - 1] ?? 1 + (lcg_value() * random_int(-1, 1));
     }
     for ($y = 0; $y < 1500; $y++) {
         array_shift($line);
@@ -27,6 +28,6 @@ try {
         $lineGraph->chart()->clearScreen()->print()->wait();
         $lineGraph->clearAllMarkers();
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     echo $e->getMessage();
 }

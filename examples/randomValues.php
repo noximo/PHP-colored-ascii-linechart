@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $settings = new Settings();
@@ -13,11 +14,15 @@ $lineGraph = new Linechart();
 $lineGraph->setSettings($settings);
 
 try {
+    $lineA = [];
+    $lineB = [];
+    $lineC = [];
+    $lineD = [];
     for ($i = 0; $i < 120; $i++) {
-        $lineA[$i] = ($lineA[$i - 1] ?? 1) + random_int(-2, 2);
-        $lineB[$i] = ($lineB[$i - 1] ?? 1) + random_int(-2, 2);
-        $lineC[$i] = ($lineC[$i - 1] ?? 1) + random_int(-2, 2);
-        $lineD[$i] = ($lineD[$i - 1] ?? 1) + random_int(-2, 2);
+        $lineA[$i] = $lineA[$i - 1] ?? 1 + random_int(-2, 2);
+        $lineB[$i] = $lineB[$i - 1] ?? 1 + random_int(-2, 2);
+        $lineC[$i] = $lineC[$i - 1] ?? 1 + random_int(-2, 2);
+        $lineD[$i] = $lineD[$i - 1] ?? 1 + random_int(-2, 2);
     }
     for ($y = 0; $y < 1500; $y++) {
         array_shift($lineA);
@@ -39,6 +44,6 @@ try {
         $lineGraph->chart()->clearScreen()->print()->wait();
         $lineGraph->clearAllMarkers();
     }
-} catch (Exception $e) {
-    echo $e->getMessage();
+} catch (Throwable $throwable) {
+    echo $throwable->getMessage();
 }

@@ -1,0 +1,217 @@
+<html lang="">
+<head>
+    <style>
+        body {
+            background-color: #34495e;
+            color: white;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        b {
+            color: lightskyblue;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin: 5px;
+        }
+
+        .time {
+            font-style: italic;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: yellow;
+        }
+
+        table {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        th {
+            text-align: left;
+            padding: 25px 0 10px 0;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        .section {
+            font-size: 1.4em;
+        }
+
+        .line {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .error:nth-child(odd) {
+            background: #374d63
+        }
+
+        .regex {
+            color: #00000085;
+        }
+
+        #thanks {
+            margin-top: 50px;
+            font-size: 0.65em;
+            text-align: center;
+        }
+    </style>
+    <title>PHPStan analysis result</title>
+</head>
+<h1>PHPStan analysis result</h1>
+<div class="time">2019-08-20 22:11:06</div>
+
+
+<div>
+    <table>
+                            <thead>
+            <tr>
+                <th colspan="2" class="section">Files with errors: 2</th>
+            </tr>
+            </thead>
+                            <thead>
+                <tr>
+                    <th colspan="2">C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php (9×)</th>
+                </tr>
+                </thead>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=49'>49</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagedestroy expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagedestroy expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=48'>48</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagepng expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagepng expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=45'>45</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagettftext expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagettftext expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=43'>43</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagefilledrectangle expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagefilledrectangle expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=43'>43</a>
+                        </td>
+                        <td>
+                            Parameter <b>#4</b> <b>$x2</b> of function imagefilledrectangle expects <b>int,</b> <b>float|int</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#4 \$x2 of function imagefilledrectangle expects int, float\|int given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=41'>41</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagecolorallocate expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagecolorallocate expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=40'>40</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$im</b> of function imagecolorallocate expects resource, <b>resource|false</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$im of function imagecolorallocate expects resource, resource\|false given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=39'>39</a>
+                        </td>
+                        <td>
+                            Parameter <b>#1</b> <b>$x_size</b> of function imagecreatetruecolor expects <b>int,</b> <b>float|int</b> given.                            <br>
+                            <small class="regex">- '#Parameter \#1 \$x_size of function imagecreatetruecolor expects int, float\|int given#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\image.php&line=36'>36</a>
+                        </td>
+                        <td>
+                            Only numeric types are allowed in <b>*,</b> <b>int|null</b> given on the right side.                            <br>
+                            <small class="regex">- '#Only numeric types are allowed in \*, int\|null given on the right side#'</small>
+                        </td>
+                    </tr>
+                                            <thead>
+                <tr>
+                    <th colspan="2">C:\wamp64\www\PHPColoredAsciiLinechart\examples\randomValues.php (4×)</th>
+                </tr>
+                </thead>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\randomValues.php&line=35'>35</a>
+                        </td>
+                        <td>
+                            Only numeric types are allowed in <b>+,</b> <b>int|false</b> given on the left side.                            <br>
+                            <small class="regex">- '#Only numeric types are allowed in \+, int\|false given on the left side#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\randomValues.php&line=33'>33</a>
+                        </td>
+                        <td>
+                            Only numeric types are allowed in <b>+,</b> <b>int|false</b> given on the left side.                            <br>
+                            <small class="regex">- '#Only numeric types are allowed in \+, int\|false given on the left side#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\randomValues.php&line=31'>31</a>
+                        </td>
+                        <td>
+                            Only numeric types are allowed in <b>+,</b> <b>int|false</b> given on the left side.                            <br>
+                            <small class="regex">- '#Only numeric types are allowed in \+, int\|false given on the left side#'</small>
+                        </td>
+                    </tr>
+                                    <tr class="error">
+                        <td class="line">
+                            <a href='editor://open/?file=C:\wamp64\www\PHPColoredAsciiLinechart\examples\randomValues.php&line=29'>29</a>
+                        </td>
+                        <td>
+                            Only numeric types are allowed in <b>+,</b> <b>int|false</b> given on the left side.                            <br>
+                            <small class="regex">- '#Only numeric types are allowed in \+, int\|false given on the left side#'</small>
+                        </td>
+                    </tr>
+                                    
+    </table>
+    <div id="thanks">
+        This file was made thanks to
+        <a href="https://github.com/phpstan/phpstan">PHPStan</a> and was outputted by
+        <a href="https://github.com/noximo/PHPStan-FileOutput">PHPStan FileOutput</a>
+    </div>
+</div>
+</html>

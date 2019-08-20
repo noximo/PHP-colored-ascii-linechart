@@ -16,4 +16,6 @@ parameters:
     SlevomatCodingStandard\Sniffs\Namespaces\ReferenceUsedNamesOnlySniff: ~
     Symplify\CodingStandard\Sniffs\DependencyInjection\NoClassInstantiationSniff: ~
     Symplify\CodingStandard\Sniffs\CleanCode\ForbiddenStaticFunctionSniff: ~
-    SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff.MissingTraversableReturnTypeHintSpecification: ~ #DELETE
+    PhpCsFixer\Fixer\Import\OrderedImportsFixer: ~
+    Symplify\CodingStandard\Fixer\Commenting\BlockPropertyCommentFixer: ~
+    Symplify\CodingStandard\Sniffs\ControlStructure\SprintfOverContactSniff: ~

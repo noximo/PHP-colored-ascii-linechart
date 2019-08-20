@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $lineGraph = new Linechart();

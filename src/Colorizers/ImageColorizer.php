@@ -8,7 +8,7 @@ namespace noximo\PHPColoredAsciiLinechart\Colorizers;
  * Class HTMLColorizer
  * @package noximo\PHPColoredAsciiLinechart\Colorizers
  */
-final class ImageColorizer implements IColorizer
+final class ImageColorizer implements ColorizerInterface
 {
     /**
      * @param array|null $styles
@@ -17,12 +17,12 @@ final class ImageColorizer implements IColorizer
     {
         return $text;
     }
-    
+
     public function getEOL(): string
     {
         return PHP_EOL;
     }
-    
+
     public function processFinalText(string $text): string
     {
         return $text;

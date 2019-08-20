@@ -38,10 +38,10 @@
     "symplify/easy-coding-standard": "^6.0"
   },
   "scripts": {
-    "check-cs": "ecs check src",
-    "fix-cs": "ecs check src --fix",
+    "check-cs": "ecs check src examples",
+    "fix-cs": "ecs check src examples --fix",
     "lint": "parallel-lint --colors --exclude vendor .",
-    "phpstan": "phpstan analyze src --level max -c phpstan.neon --error-format=fileoutput",
+    "phpstan": "phpstan analyze src examples --level max -c phpstan.neon --error-format=fileoutput",
     "test": [
       "@lint",
       "@check-cs",

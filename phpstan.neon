@@ -4,19 +4,10 @@ parameters:
     excludes_analyse:
         - %rootDir%/vendor
     ignoreErrors:
-        - '#Access to an undefined property ccxt\\Exchange::\$secret.#'
-        - '#Access to an undefined property ccxt\\Exchange::\$apiKey.#'
-        - '#Access to an undefined property ccxt\\Exchange::\$has.#'
-        - '#Constant ROOT_DIR not found.#'
-        - '#Constant BITTREX_API_KEY not found.#'
-        - '#Constant BITTREX_API_SECRET not found.#'
 
 includes:
-	- vendor/phpstan/phpstan-nette/extension.neon
-	- vendor/phpstan/phpstan-nette/rules.neon
 	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
-	- vendor/grifart/phpstan-oneline/config.neon
 services:
 	errorFormatter.fileoutput:
-		class: noximo\FileOutput(./log/phpstan.html, @errorFormatter.compact)
+		class: noximo\FileOutput(./log/phpstan.html, @errorFormatter.raw)

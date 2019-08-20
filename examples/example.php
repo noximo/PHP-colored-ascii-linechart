@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -18,7 +19,7 @@ $settings
     ->setFormat( //control how y axis labels will be printed out
         function ($x, Settings $settings) {
             $padding = $settings->getPadding();
-            $paddingLength = \strlen($padding);
+            $paddingLength = strlen($padding);
 
             return substr($padding . round($x, 2), -$paddingLength);
         }
@@ -56,7 +57,6 @@ for ($y = 0; $y < 40000; $y++) { //Move sinusoid
         [AsciiColorizer::LIGHT_BLUE],
         Linechart::CROSS //Point can be made more visible with crosslines. Default is Linegraph::POINT
     );
-
 
     $graph = $lineGraph->chart(); //Graph is an object with all data drawn. It can be simply echoed or we can leverage its methods for output control
 

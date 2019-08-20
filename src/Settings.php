@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace noximo\PHPColoredAsciiLinechart;
 
 use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Colorizers\IColorizer;
+use noximo\PHPColoredAsciiLinechart\Colorizers\ColorizerInterface;
 
 /**
  * Class Config
@@ -39,7 +39,7 @@ final class Settings
     private $fps = 12;
 
     /**
-     * @var IColorizer
+     * @var ColorizerInterface
      */
     private $colorizer;
 
@@ -78,7 +78,7 @@ final class Settings
         return $this->height;
     }
 
-    public function setHeight(?int $height): self
+    public function setHeight(int $height): self
     {
         $this->height = $height;
 
@@ -129,12 +129,12 @@ final class Settings
         return $this;
     }
 
-    public function getColorizer(): IColorizer
+    public function getColorizer(): ColorizerInterface
     {
         return $this->colorizer ?? new AsciiColorizer();
     }
 
-    public function setColorizer(IColorizer $colorizer): self
+    public function setColorizer(ColorizerInterface $colorizer): self
     {
         $this->colorizer = $colorizer;
 

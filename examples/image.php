@@ -1,10 +1,11 @@
 <?php
-declare(strict_types = 1);
 
+declare(strict_types=1);
+
+use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
 use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 use noximo\PHPColoredAsciiLinechart\Colorizers\ImageColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
-use noximo\PHPColoredAsciiLinechart\Settings;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $lineGraph = new Linechart();
@@ -26,11 +27,11 @@ header('Content-Type: image/png');
 $font = __DIR__ . '/font/font.ttf';
 $fontSize = 40;
 
-$text = $graph->outputChart();
+$text = (string) $graph;
 
 // Calculate the required width to hold this text
 $enclosingBox = imagettfbbox($fontSize, 0, $font, $text);
-$width = ($enclosingBox[2] - $enclosingBox[0]) - 10;
+$width = $enclosingBox[2] - $enclosingBox[0] - 10;
 
 $height = $fontSize * $graph->getSettings()->getHeight() * 2;
 

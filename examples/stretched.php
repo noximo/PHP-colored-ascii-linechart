@@ -1,14 +1,14 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\AsciiColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $settings = new Settings();
 $settings->setFPS(40);
-$settings->setHeight(null);
 
 $lineGraph = new Linechart();
 $lineGraph->setSettings($settings);
@@ -23,7 +23,6 @@ try {
 
     $lineGraph->chart()->clearScreen()->print()->wait();
     $lineGraph->clearAllMarkers();
-
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     echo $e->getMessage();
 }

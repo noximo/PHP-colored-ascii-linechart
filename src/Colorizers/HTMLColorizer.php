@@ -8,7 +8,7 @@ namespace noximo\PHPColoredAsciiLinechart\Colorizers;
  * Class HTMLColorizer
  * @package noximo\PHPColoredAsciiLinechart\Colorizers
  */
-final class HTMLColorizer implements IColorizer
+final class HTMLColorizer implements ColorizerInterface
 {
     /**
      * @param array|null $styles
@@ -21,14 +21,14 @@ final class HTMLColorizer implements IColorizer
 
         $cssStyles = implode(';', str_replace(' ', '', $styles));
 
-        return "<span style='" . $cssStyles . "'>" . $text . '</span>';
+        return sprintf("<span style='%s'>%s</span>", $cssStyles, $text);
     }
-    
+
     public function getEOL(): string
     {
         return '<br>';
     }
-    
+
     public function processFinalText(string $text): string
     {
         $div = "<div style='font-family:monospace,monospace; font-size:1em;'>";

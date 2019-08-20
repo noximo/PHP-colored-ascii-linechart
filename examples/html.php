@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
 
-use noximo\PHPColoredAsciiLinechart\Colorizers\HTMLColorizer;
-use noximo\PHPColoredAsciiLinechart\Linechart;
+declare(strict_types=1);
+
 use noximo\PHPColoredAsciiLinechart\Settings;
+use noximo\PHPColoredAsciiLinechart\Linechart;
+use noximo\PHPColoredAsciiLinechart\Colorizers\HTMLColorizer;
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $lineGraph = new Linechart();
@@ -19,5 +20,4 @@ $lineGraph->addLine(0, ['color:black'], Linechart::FULL_LINE);
 $lineGraph->addMarkers($lineA, ['color: green'], ['color: red']);
 $lineGraph->setSettings($settings);
 
-
-echo $lineGraph->chart();
+$lineGraph->chart()->print();

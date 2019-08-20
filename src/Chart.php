@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace noximo\PHPColoredAsciiLinechart;
 
+use function chr;
+use function strlen;
+use function is_resource;
+
 /**
  * Class Graph
  * @package noximo\PHPColoredConsoleLinegraph
@@ -59,74 +63,74 @@ final class Chart
     {
         return $this->prepareChart() . $this->prepareText();
     }
-    
+
     public function getSettings(): Settings
     {
         return $this->settings;
     }
-    
+
     public function setSettings(Settings $settings): self
     {
         $this->settings = $settings;
 
         return $this;
     }
-    
+
     public function getResults(): array
     {
         return $this->results;
     }
-    
+
     public function getMin(): float
     {
         return $this->min;
     }
-    
+
     public function setMin(float $min): self
     {
         $this->min = $min;
 
         return $this;
     }
-    
+
     public function getMax(): float
     {
         return $this->max;
     }
-    
+
     public function setMax(float $max): self
     {
         $this->max = $max;
 
         return $this;
     }
-    
+
     public function setWidth(int $width): self
     {
         $this->width = $width;
 
         return $this;
     }
-    
+
     public function addResult(array $result): void
     {
         $this->results[] = $result;
     }
-    
+
     public function printAndwait(): self
     {
         $this->print()->wait();
 
         return $this;
     }
-    
+
     public function wait(): self
     {
         usleep((int) round(1000000 / $this->settings->getFps()));
 
         return $this;
     }
-    
+
     public function print(): self
     {
         $this->output($this->prepareChart());
@@ -134,7 +138,7 @@ final class Chart
 
         return $this;
     }
-    
+
     public function toArray(): array
     {
         $return = [];
@@ -146,11 +150,13 @@ final class Chart
 
         return $return;
     }
-    
-    public function clearScreen(?bool $useAlternativeMethod = null): self
+
+    public function clearScreen(bool $useAlternativeMethod = false): self
     {
         if ($useAlternativeMethod) {
-            $output = \chr(27) . \chr(91) . 'H' . \chr(27) . \chr(91) . 'J';
+            $chr27 = chr(27);
+            $chr91 = chr(91);
+            $output = sprintf('%s%sH%s%sJ', $chr27, $chr91, $chr27, $chr91);
         } else {
             $output = "\033[0;0f";
         }
@@ -159,7 +165,7 @@ final class Chart
 
         return $this;
     }
-    
+
     public function setAlltimeMaxHeight(int $allTimeMaxHeight): self
     {
         $this->allTimeMaxHeight = $allTimeMaxHeight;
@@ -175,7 +181,7 @@ final class Chart
 
         return $this;
     }
-    
+
     private function prepareChart(): string
     {
         $return = '';
@@ -206,41 +212,54 @@ final class Chart
 
         return $return;
     }
-    
+
     private function output(string $output): void
     {
         $fopen = fopen('php://stdout', 'wb');
-        if (\is_resource($fopen)) {
+        if (is_resource($fopen)) {
             fwrite($fopen, $output);
         }
     }
-    
+
     private function merge(): array
     {
-        $x = 0;
         $merged = [];
         foreach ($this->results as $result) {
             foreach ($result as $x => $row) {
-                foreach ($row as $y => $cell) {
-                    if ($this->shouldBeMerged($merged, (string) $x, (string) $y, (string) $cell)) {
-                        $merged[$x][$y] = (string) $cell;
-                    }
-                }
+                $merged = $this->mergeRow($merged, $row, $x);
             }
         }
 
-        if ($x < $this->allTimeMaxHeight) {
-            $width = $this->width + \strlen($this->settings->getPadding());
-            for ($i = 0, $iMax = $this->allTimeMaxHeight - $x; $i < $iMax; $i++) {
-                $merged[] = array_fill(0, $width, ' ');
+        return $this->adjustAllTimeMaxHeight($merged, $x ?? 0);
+    }
+
+    private function mergeRow(array $merged, array $row, int $x): array
+    {
+        foreach ($row as $y => $cell) {
+            $cell = (string) $cell;
+            if ($this->shouldBeMerged($merged, $x, $y, $cell)) {
+                $merged[$x][$y] = $cell;
             }
         }
 
         return $merged;
     }
-    
-    private function shouldBeMerged(array $merged, string $x, string $y, string $cell): bool
+
+    private function adjustAllTimeMaxHeight(array $merged, int $x): array
     {
-        return !isset($merged[$x][$y]) || ($cell !== ' ' && strpos($merged[$x][$y], 'm') === false);
+        if ($x < $this->allTimeMaxHeight) {
+            $width = $this->width + strlen($this->settings->getPadding());
+            $filledArray = array_fill(0, $width, ' ');
+            for ($i = 0, $iMax = $this->allTimeMaxHeight - $x; $i < $iMax; $i++) {
+                $merged[] = $filledArray;
+            }
+        }
+
+        return $merged;
+    }
+
+    private function shouldBeMerged(array $merged, int $x, int $y, string $cell): bool
+    {
+        return !isset($merged[$x][$y]) || ($cell !== ' ');
     }
 }
