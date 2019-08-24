@@ -271,7 +271,7 @@ final class Linechart
 
         $this->range = max(1, abs($max - $min));
 
-        $height = (int) ($this->getSettings()->getHeight() ?? $this->range);
+        $height = max(1, (int) ($this->getSettings()->getHeight() ?? $this->range));
         $this->ratio = $height / $this->range;
 
         $this->min2 = $min * $this->ratio;
