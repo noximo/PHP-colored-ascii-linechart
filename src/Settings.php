@@ -22,6 +22,11 @@ final class Settings
      * @var int
      */
     private $offset = 2;
+    
+    /**
+     * @var int
+     */
+    private $decimals = 2;
 
     /**
      * @var string
@@ -50,9 +55,10 @@ final class Settings
     {
         $this->format = function ($x, self $settings) {
             $padding = $settings->getPadding();
+            $decimals = $settings->getDecimals();
             $paddingLength = \strlen($padding);
 
-            return substr($padding . round($x, 2), -$paddingLength);
+            return substr($padding . round($x, $decimals), -$paddingLength);
         };
     }
 
@@ -73,6 +79,18 @@ final class Settings
         return $this;
     }
 
+    public function getDecimals(): int
+    {
+        return $this->decimals;
+    }
+    
+    public function setDecimals(int $decimals): self
+    {
+        $this->decimals = $decimals;
+
+        return $this;
+    }
+    
     public function getHeight(): ?int
     {
         return $this->height;
