@@ -4,10 +4,4 @@ parameters:
     excludes_analyse:
         - %rootDir%/vendor
     ignoreErrors:
-
-includes:
-	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
-	- vendor/phpstan/phpstan-strict-rules/rules.neon
-services:
-	errorFormatter.fileoutput:
-		class: noximo\FileOutput(./log/phpstan.html, @errorFormatter.raw)
+    checkMissingIterableValueType: false

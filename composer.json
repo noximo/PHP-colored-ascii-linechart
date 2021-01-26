@@ -28,12 +28,10 @@
   },
   "license": "MIT",
   "require-dev": {
-    "jakub-onderka/php-console-highlighter": "^0.4",
-    "jakub-onderka/php-parallel-lint": "1.0.*",
-    "noximo/phpstan-fileoutput": "0.1.*",
-    "phpstan/phpstan": "^0.11",
-    "phpstan/phpstan-deprecation-rules": "^0.11",
-    "phpstan/phpstan-strict-rules": "^0.11",
+    "php-parallel-lint/php-parallel-lint": "^v1.0.0",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "phpstan/phpstan-strict-rules": "^0.12",
     "roave/security-advisories": "dev-master",
     "symplify/easy-coding-standard": "^6.0"
   },
@@ -41,7 +39,7 @@
     "check-cs": "ecs check src examples",
     "fix-cs": "ecs check src examples --fix",
     "lint": "parallel-lint --colors --exclude vendor .",
-    "phpstan": "phpstan analyze src examples --level max -c phpstan.neon --error-format=fileoutput",
+    "phpstan": "phpstan analyze src examples --level max -c phpstan.neon",
     "test": [
       "@lint",
       "@check-cs",
